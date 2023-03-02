@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Data wrangling: Part I</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jordan Creed" />
+    <meta name="date" content="2022-06-08" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link rel="stylesheet" href="css/moffitt-xaringan.css" type="text/css" />
+    <link rel="stylesheet" href="css/moffitt-xaringan-extra.css" type="text/css" />
+    <link rel="stylesheet" href="css/tachyons.moffitt.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+name: title
+class: left bottom hide-count
+
+&lt;!-- Slide Extras --&gt;
+
+
+
+&lt;!-- Title Slide --&gt;
+&lt;!-- &lt;div class="talk-logo"&gt;&lt;/div&gt; --&gt;
+
+.talk-meta[
+.talk-title[
+# Data wrangling: Part I
+
+Importing and data cleaning
+]
+
+.talk-author[
+Jordan Creed&lt;br&gt;
+.moffitt-gray[Moffitt Cancer Center]
+]
+
+.talk-date.moffitt-gray[
+June 08, 2022
+]
+]
+
+
+&lt;style type="text/css"&gt;
+/* Define title slide image or logo here */
+.talk-logo {
+  width: 400px;
+  height: 750px;
+  position: absolute;
+  top: 6%;
+  right: 7%;
+  /* background-image: url('img/r4ds-cover.png'); */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: contain;
+}
+&lt;/style&gt;
+
+&lt;!-- Moffitt Logo and Slide Border ----
+
+All slides except "title" and "inverse" slides
+have the Moffitt Color Bar and logo.
+
+Additional classes are provided to disable both:
+
+- `class: no-logo` hides the logo
+- `class: no-border` hides the border
+
+or to force either to be shown
+
+- `class: moffitt-slide-logo` shows the logo
+- `class: moffitt-slide-border` shows the border
+--&gt;
+
+---
+## What we are going to cover
+
+*   Elements of tidy data 
+*   TCGA data
+*   Importing data
+*   Data cleaning with `dplyr`
+
+---
+class: inverse center middle
+
+# What is "tidy" data?
+
+---
+## Elements of "tidy" data 
+
+Data comes in all shapes and sizes, but not all data organization is made equal!
+
+3 elements of tidy data:
+
+1. Each .blue[variable] has its own .blue[column]
+2. Each .blue[observation] has its own .blue[row]
+3. Each .blue[value] has it own .blue[cell]
+
+.blank[blank line]
+
+.blank[blank line]
+
+.blank[blank line]
+
+👉 For more information please see chapter 11 of [R for Data Science](https://r4ds.had.co.nz/data-import.html)
+
+---
+## Elements of "tidy" data 
+
+&lt;img src="https://raw.githubusercontent.com/allisonhorst/stats-illustrations/master/rstats-artwork/tidydata_3.jpg" width="75%" class="center"/&gt;
+
+---
+class: inverse center middle
+
+# TCGA Data
+
+---
+## The Cancer Genome Atlas (TCGA)
+
+TCGA is the large cancer genomics program spanning 33 cancer types and 
+multiple institutions. 
+
+  * HNSC - Head and neck squamous cell carcinoma
+  * KIRC - Kidney renal clear cell carcinoma
+  
+Data is saved as two `.csv`s : `data/tcga-clinical.csv` and `data/tcga-gene-exp.csv`
+
+---
+class: inverse center middle
+
+# Importing files
+
+---
+## Import method depends on file type!
+
+*   Most text files : `readr::read_delim()` or `readr::read_csv()`
+*   Microsoft excel files : `readxl::read_excel()`
+*   R data files : `load()`
+*   SAS data files: `haven::read_sas()`
+
+👨‍💻 remember to copy code from the import gui to your scripts!
+
+---
+
+&lt;img src="02_data-wrangling_files/figure-html/readr-cheatsheet.png" width="75%" class="center"/&gt;
+
+---
+class: inverse center middle
+
+# Data cleaning with dplyr 
+
+---
+## `dplyr` verbs and syntax &lt;img src="02_data-wrangling_files/figure-html/dplyr-logo.png" width="10%" align="right"/&gt;
+
+`select()` subset columns
+* `select(tibble_name, variable1, variable2)`
+
+`mutate()` create new variables/columns
+* `mutate(tibble_name, new_variable = variable1*2)`
+
+---
+## common `select()` options &lt;img src="02_data-wrangling_files/figure-html/dplyr-logo.png" width="10%" align="right"/&gt;
+
+`:` selects a range of columns
+
+`-` selects every column but those specified 
+
+`starts_with()` and `ends_with()` selects columns whose names start/end with 
+the specified string 
+
+`contains()` selects columns whose names contain the specified string
+
+---
+## `dplyr` verbs and syntax &lt;img src="02_data-wrangling_files/figure-html/dplyr-logo.png" width="10%" align="right"/&gt;
+
+`filter()` subset rows
+* `filter(tibble_name, variable1 == "specific value")`
+
+`summarise()` aggregates rows
+* `summarise(tibble_name, avg_value = mean(variable1))`
+
+`arrange()` orders rows 
+* `arrange(tibble_name, variable1)`
+
+.blank[blank line]
+
+Operations can be chained together with the pipe operator (`%&gt;%`) 
+
+---
+## logical tests for `filter()` &lt;img src="02_data-wrangling_files/figure-html/dplyr-logo.png" width="10%" align="right"/&gt;
+
+*   `==` : equal
+*   `!=` : not equal
+*   `&lt;` &amp; `&lt;=` : less than &amp; less than or equal to
+*   `&gt;` &amp; `&gt;=` : greater than &amp; greater than or equal to
+*   `|` : or
+*   `&amp;` : and
+*   `!` : not
+*   `%in%` : in the set 
+
+---
+## `dplyr` helpers &lt;img src="02_data-wrangling_files/figure-html/dplyr-logo.png" width="10%" align="right"/&gt;
+
+`n()` the number of rows 
+
+`n_distinct()` the number of unique values for a variable
+
+`group_by()` collects observations by a common value
+
+`%&gt;%` pipe used to join commands together
+
+---
+
+&lt;img src="02_data-wrangling_files/figure-html/dplyr-cheatsheet.png" width="75%" class="center"/&gt;
+
+
+&lt;style type="text/css"&gt;
+.blank { 
+  color: white ;
+}
+
+
+
+&lt;/style&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="libs/remark-0.14.0.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "%current%",
+"highlightStyle": "atom-one-light",
+"highlightLines": true,
+"ratio": "16:9",
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

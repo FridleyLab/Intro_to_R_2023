@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Rmarkdown</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jordan Creed" />
+    <meta name="date" content="2022-07-20" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link rel="stylesheet" href="css/moffitt-xaringan.css" type="text/css" />
+    <link rel="stylesheet" href="css/moffitt-xaringan-extra.css" type="text/css" />
+    <link rel="stylesheet" href="css/tachyons.moffitt.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+name: title
+class: left bottom hide-count
+
+&lt;!-- Slide Extras --&gt;
+
+
+
+&lt;!-- Title Slide --&gt;
+&lt;!-- &lt;div class="talk-logo"&gt;&lt;/div&gt; --&gt;
+
+.talk-meta[
+.talk-title[
+# Rmarkdown
+
+Creating interactive documents
+]
+
+.talk-author[
+Jordan Creed&lt;br&gt;
+.moffitt-gray[Moffitt Cancer Center]
+]
+
+.talk-date.moffitt-gray[
+July 20, 2022
+]
+]
+
+
+&lt;style type="text/css"&gt;
+/* Define title slide image or logo here */
+.talk-logo {
+  width: 400px;
+  height: 750px;
+  position: absolute;
+  top: 6%;
+  right: 7%;
+  /* background-image: url('img/r4ds-cover.png'); */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: contain;
+}
+&lt;/style&gt;
+
+&lt;!-- Moffitt Logo and Slide Border ----
+
+All slides except "title" and "inverse" slides
+have the Moffitt Color Bar and logo.
+
+Additional classes are provided to disable both:
+
+- `class: no-logo` hides the logo
+- `class: no-border` hides the border
+
+or to force either to be shown
+
+- `class: moffitt-slide-logo` shows the logo
+- `class: moffitt-slide-border` shows the border
+--&gt;
+
+---
+class: inverse center middle
+
+# Rmarkdown
+
+---
+## Rmarkdown
+
+&lt;img src="08_slides-rmarkdown_files/figure-html/rmarkdown-workflow.png" width="100%" align="right"/&gt;
+
+Allows you to share code, comments and outputs easily 
+
+⭐ REPRODUCIBLE! ⭐
+
+3 elements: YAML header, formatted text, code 
+
+---
+## Rmarkdown
+
+&lt;img src="08_slides-rmarkdown_files/figure-html/rmarkdown-diagram.png" width="100%" class="center"/&gt;
+
+---
+## Formatted Text 
+
+Rmarkdown uses regular markdown rules/syntax.
+
+When you `knit` your document the final output will display according 
+to the formatting rules on your `.Rmd`
+
+.pull-left[
+Text
+
+```
+_italic_
+__bold__
+```
+
+Headers
+
+```
+# 1st Level
+
+## 2nd Level
+```
+]
+
+.pull-right[
+Lists
+```
+- Item 1
+- Item 2
+    - Subitem
+```
+
+Insert images 
+```
+![caption](path/to/image.png)
+```
+]
+
+---
+## Code
+
+Code can be written as either code chunks or inline code
+
+Code chunks can be named: ```` ```{r chunk-name} ````
+
+Output can be modified by chunk options placed are wrapped around ```` ```{r} ```` and ```` ``` ````
+  * `eval = FALSE` keeps code from being evaluated 
+  * `echo = FALSE` keeps code from being displayed (output is still displayed)
+  * `message = FALSE` and `warning = FALSE` keeps messages/warnings from being displayed
+  * `results = 'hide'` and `fig.show = 'hide'` hides printed output and plots
+  
+---
+## Caching
+
+When a document is knit - it starts from a clean slate 
+
+⭐ REPRODUCIBLE! ⭐
+
+However you can cache a code chunk using the `cache = TRUE` option
+  * ⚠️ Only that code chunk will be cached ⚠️
+  * `dependson` option can be given a charactr vector of EVERY chunk that the cached chunk depends on 
+  
+---
+## YAML
+
+Located at the top of your file and enclosed by `---`
+
+Controls "whole document" parameters and settings 
+
+```
+---
+title: "My super cool document"
+author: 
+  - Jordan Creed
+output: html_document
+---
+```
+
+---
+## Parameters
+
+Parameters are values that can be set for when you render a document 
+
+```
+---
+output: html_document
+params:
+  cancer_type: "HNSC"
+---
+```
+
+```` 
+```
+clinical %&gt;% 
+  filter(acronym == params$cancer_type)
+```
+````
+
+`rmarkdown::render("my-markdown-doc.Rmd", params = list(cancer_type = "KIRC"))`
+
+---
+## 
+
+&lt;img src="08_slides-rmarkdown_files/figure-html/rmarkdown-cheatsheet.png" width="65%" class="center"/&gt;
+
+[R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/basics.html)
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="libs/remark-0.14.0.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "%current%",
+"highlightStyle": "atom-one-light",
+"highlightLines": true,
+"ratio": "16:9",
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

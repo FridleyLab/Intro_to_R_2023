@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Lea.orange[R]ning about Statistics - YEAH!!!</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Zachary Thompson" />
+    <meta name="date" content="2022-07-12" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/moffitt-xaringan.css" type="text/css" />
+    <link rel="stylesheet" href="css/moffitt-xaringan-extra.css" type="text/css" />
+    <link rel="stylesheet" href="css/tachyons.moffitt.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+name: title
+class: left bottom hide-count
+
+&lt;!-- Slide Extras --&gt;
+
+
+
+
+
+
+&lt;!-- Title Slide --&gt;
+&lt;!-- &lt;div class="talk-logo"&gt;&lt;/div&gt; --&gt;
+
+.talk-meta[
+.talk-title[
+# Lea.orange[R]ning about Statistics - YEAH!!!
+
+Correlation, Scatterplots and Regression! 
+]
+
+.talk-author[
+Zachary Thompson&lt;br&gt;
+.moffitt-gray[Moffitt Cancer Center]
+]
+
+.talk-date.moffitt-gray[
+July 12, 2022
+]
+]
+
+
+&lt;style type="text/css"&gt;
+/* Define title slide image or logo here */
+.talk-logo {
+  width: 400px;
+  height: 750px;
+  position: absolute;
+  top: 6%;
+  right: 7%;
+  /* background-image: url('img/r4ds-cover.png'); */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: contain;
+}
+&lt;/style&gt;
+
+&lt;!-- Moffitt Logo and Slide Border ----
+
+All slides except "title" and "inverse" slides
+have the Moffitt Color Bar and logo.
+
+Additional classes are provided to disable both:
+
+- `class: no-logo` hides the logo
+- `class: no-border` hides the border
+
+or to force either to be shown
+
+- `class: moffitt-slide-logo` shows the logo
+- `class: moffitt-slide-border` shows the border
+--&gt;
+
+---
+
+## What you will learn to run
+ 
+ 
+- Scatterplots
+
+- Correlation
+
+- Univariate regresssion
+
+- MultivarIABLE reression
+
+
+---
+ 
+## Data prep: here()
+ 
+
+
+```r
+ here()
+```
+
+```
+[1] "F:/myGitRepo/Intro_to_R_2022"
+```
+
+```r
+ here("data")
+```
+
+```
+[1] "F:/myGitRepo/Intro_to_R_2022/data"
+```
+
+```r
+ here("data","tcga-clinical.txt")
+```
+
+```
+[1] "F:/myGitRepo/Intro_to_R_2022/data/tcga-clinical.txt"
+```
+
+```r
+ here("data","tcga-gene-exp.txt")
+```
+
+```
+[1] "F:/myGitRepo/Intro_to_R_2022/data/tcga-gene-exp.txt"
+```
+
+---
+ 
+## Data prep: load
+ 
+
+
+```r
+clinical &lt;- read_csv(file = here("data","tcga_clinical.txt"))
+geneexp &lt;- read_csv(file = here("data","tcga_gene_exp.txt"))
+```
+ 
+
+---
+ 
+## Data prep: merge
+ 
+
+
+```r
+  tcgatest &lt;- left_join(clinical, geneexp)
+  tcga &lt;- left_join(clinical, geneexp, by = "bcr_patient_barcode")
+
+     intersect(names(clinical), names(geneexp))
+```
+
+```
+[1] "bcr_patient_barcode"
+```
+
+```r
+     dim(tcgatest)
+```
+
+```
+[1] 1043   33
+```
+
+```r
+     dim(tcga) 
+```
+
+```
+[1] 1043   33
+```
+
+ 
+---
+ 
+
+## Data prep: mutate
+ 
+
+
+```r
+  tcga &lt;- tcga %&gt;% mutate( 
+  smoking = case_when(
+    tobacco_smoking_history %in% c(
+      "Current reformed smoker for &lt; or = 15 years",
+      "Current reformed smoker for &gt; 15 years",
+      "Current Reformed Smoker, Duration Not Specified"
+    ) ~ "Former",
+    tobacco_smoking_history %in% c("Current smoker") ~ "Current",
+    tobacco_smoking_history %in% c("Lifelong Non-smoker") ~ "Never",
+    is.na(tobacco_smoking_history) ~ NA_character_
+  )
+)
+```
+
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point() 
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-6-1.png" width="100%" /&gt;
+]
+]
+ 
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(colour = gender)) 
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-7-1.png" width="100%" /&gt;
+]
+]
+ 
+
+
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga %&gt;% filter(!is.na(smoking))) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(shape = smoking, colour = smoking)) 
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-8-1.png" width="100%" /&gt;
+]
+]
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga %&gt;% filter(!is.na(smoking))) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(shape = smoking, colour = gender)) 
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-9-1.png" width="100%" /&gt;
+]
+]
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga %&gt;% filter(!is.na(smoking))) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(shape = smoking, colour = gender))  + 
+  scale_color_brewer(palette="Dark2") + 
+  theme_minimal()
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-10-1.png" width="100%" /&gt;
+]
+]
+ 
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga %&gt;% filter(!is.na(smoking))) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(shape = smoking, colour = gender))  + 
+  scale_color_brewer(palette="Spectral") + 
+  theme_dark()
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-11-1.png" width="100%" /&gt;
+]
+]
+  
+
+---
+
+## Getting help 
+
+- In R console 
+
+&gt; library(ggplot2)
+
+&gt; ?scale_color_brewer
+ 
+&gt; ?theme
+
+
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(size = stage,colour = weight)) 
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-12-1.png" width="100%" /&gt;
+]
+]
+ 
+
+
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(size = stage,colour = weight))   + 
+  scale_color_distiller(palette="Oranges") + 
+  theme_dark()
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-13-1.png" width="100%" /&gt;
+]
+]
+ 
+
+
+
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(size = stage,colour = weight, shape = gender)) 
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-14-1.png" width="100%" /&gt;
+]
+]
+ 
+
+
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(size = stage,colour = weight, 
+                 shape = gender, alpha = .5)) 
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-15-1.png" width="100%" /&gt;
+]
+]
+ 
+
+ 
+
+
+
+---
+ 
+# Correlation 
+ 
+A correlation coefficient is a numerical measure of some type of correlation, meaning a statistical relationship between two variables.  
+
+Several types of correlation coefficient exist, each with their own definition and own range of usability and characteristics. They all assume values in the range from −1 to +1, where ±1 indicates the strongest possible agreement and 0 no agreement.
+
+Very common :
+
+ Pearson
+ &amp;  
+ Spearman
+ 
+---
+ 
+## Pearson Correlation 
+
+ The .bg-orange.white[Pearson product-moment correlation coefficient], also known as r or Pearson's r, is a measure of the strength and direction of the linear relationship between two variables that is defined as the covariance of the variables divided by the product of their standard deviations.  Pearson's r is the best-known and most commonly used type of correlation coefficient. A relationship is linear when a change in one variable is associated with a proportional change in the other variable.
+ 
+`\(r_{xy}\)` = `\(\frac{ \sum_{i = 1}^{n}  (x_{i}-  \overline{x} )(y_{i}- \overline{y})}{\sqrt(\sum_{i = 1}^{n}  (x_{i}-  \overline{x} )^{2})\sqrt(\sum_{i = 1}^{n}  (y_{i}-  \overline{y} )^{2})}\)` 
+
+*   n is the sample size
+*   `\(x_{i}\)` and `\(y_{i}\)`  are the individual sample points indexed with i
+*   `\(\overline{x} = \frac{1}{n}\sum_{i = 1}^{n} x_{i}\)` is the smaple mean of x (similarly y)
+
+
+
+---
+ 
+## Pearson Correlation 
+ 
+
+
+```r
+r1 &lt;- tcga %&gt;% correlation::cor_test("DUOXA1_exp", 
+                                          "DUOX1_exp", 
+                                          method = c("pearson") ) 
+ 
+r2 &lt;- tcga %&gt;% correlation::cor_test("BUB1_exp",
+                                          "C10orf32_exp",
+                                          method = c("pearson") ) 
+ 
+r3 &lt;- tcga %&gt;% correlation::cor_test("BRAF_exp", 
+                                          "DTL_exp", 
+                                          method = c("pearson") )
+```
+
+
+
+---
+ 
+## Pearson Correlation 
+ 
+
+
+```r
+ bind_rows(r1,r2,r3 ) 
+```
+
+```
+Parameter1 |   Parameter2 |     r |         95% CI | t(1041) |         p
+------------------------------------------------------------------------
+DUOXA1_exp |    DUOX1_exp |  0.92 | [ 0.91,  0.93] |   74.79 | &lt; .001***
+BUB1_exp   | C10orf32_exp | -0.60 | [-0.64, -0.56] |  -24.23 | &lt; .001***
+BRAF_exp   |      DTL_exp |  0.02 | [-0.04,  0.08] |    0.64 | 0.521    
+
+Observations: 1043
+```
+
+
+
+
+
+
+---
+ 
+## Pearson Correlation 
+ 
+
+
+```r
+ knitr::kable(bind_rows(r1,r2,r3 ), format = 'html', digits = 3) %&gt;%
+  kable_styling(font_size = 12)
+```
+
+&lt;table class="table" style="font-size: 12px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Parameter1 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Parameter2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; r &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; CI &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; CI_low &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; CI_high &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; t &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; df_error &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Method &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; n_Obs &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; DUOXA1_exp &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; DUOX1_exp &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.918 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.95 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.908 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.927 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 74.789 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1041 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pearson &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1043 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BUB1_exp &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; C10orf32_exp &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.600 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.95 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.638 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.560 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -24.227 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1041 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pearson &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1043 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BRAF_exp &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; DTL_exp &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.95 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.041 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.080 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.642 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1041 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.521 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pearson &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1043 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+
+
+
+---
+
+## Pearson Correlation: Scatter Plot
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point() + 
+  annotate(geom = "text", x = 10, y = 25000, 
+           label = paste("r = ", round(r1$r, 2), sep = ""),
+           color = "red")
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-19-1.png" width="100%" /&gt;
+]
+]
+ 
+
+
+---
+
+## Pearson Correlation: Scatter Plot
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga) + 
+  aes(BUB1_exp, C10orf32_exp) + 
+  geom_point() + 
+  annotate(geom = "text", x = 10, y = 3800, 
+           label = paste("r = ", round(r2$r, 2), sep = ""),
+           color = "red")
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-20-1.png" width="100%" /&gt;
+]
+]
+ 
+
+
+
+ 
+
+---
+
+## Pearson Correlation: Scatter Plot
+  
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga) + 
+  aes(BRAF_exp, DTL_exp) + 
+  geom_point() + 
+  annotate(geom = "text", x = 0, y = 1100, 
+           label = paste("r = ", round(r3$r, 2), sep = ""),  
+           color = "red")
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-21-1.png" width="100%" /&gt;
+]
+]
+
+ 
+
+ 
+
+
+
+
+---
+
+## Correllation Matrix 
+ 
+
+
+```r
+tcga %&gt;% 
+  select(DUOXA1_exp, DUOX1_exp, BUB1_exp, BRAF_exp, DTL_exp ) %&gt;%
+  cor() %&gt;% round(.,2)
+```
+
+```
+           DUOXA1_exp DUOX1_exp BUB1_exp BRAF_exp DTL_exp
+DUOXA1_exp       1.00      0.92     0.40    -0.07    0.30
+DUOX1_exp        0.92      1.00     0.38    -0.05    0.30
+BUB1_exp         0.40      0.38     1.00     0.01    0.78
+BRAF_exp        -0.07     -0.05     0.01     1.00    0.02
+DTL_exp          0.30      0.30     0.78     0.02    1.00
+```
+
+
+---
+
+
+## Spearman Correlation 
+
+The Spearman correlation evaluates the monotonic or non-linear relationship between two continuous or ordinal variables. It is a nonparametric measure of rank correlation (statistical dependence between the rankings of two variables). In a monotonic relationship, the variables tend to change together, but not necessarily at a constant rate. The Spearman correlation coefficient is based on the ranked values for each variable rather than the raw data.
+ 
+`\(\rho\)` = 1 - `\(\frac{6 \sum_{}d^{2}_{i} }{n(n^{2}-1) }\)` 
+
+*  `\(d\)` is the difference in ranks  
+
+
+
+---
+
+
+
+## Example of monotonic relationship
+
+
+ 
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-23-1.png" width="100%" /&gt;
+
+---
+
+
+
+## Example of monotonic relationship 2
+
+
+ 
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-24-1.png" width="100%" /&gt;
+
+
+
+---
+
+
+ 
+
+## Spearman Correlation 
+ 
+
+
+```r
+r1 &lt;- tcga %&gt;% correlation::cor_test("DUOXA1_exp", 
+                                          "DUOX1_exp", 
+                                          method = c("spearman") ) 
+ 
+r2 &lt;- tcga %&gt;% correlation::cor_test("BUB1_exp",
+                                          "C10orf32_exp",
+                                          method = c("spearman") ) 
+ 
+r3 &lt;- tcga %&gt;% correlation::cor_test("BRAF_exp", 
+                                          "DTL_exp", 
+                                          method = c("spearman") )
+```
+
+---
+ 
+## Spearman Correlation 
+ 
+
+
+```r
+ knitr::kable(bind_rows(r1, r2, r3), format = 'html', digits = 3) %&gt;%
+  kable_styling(font_size = 12)
+```
+
+&lt;table class="table" style="font-size: 12px; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Parameter1 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Parameter2 &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; rho &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; CI &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; CI_low &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; CI_high &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; S &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Method &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; n_Obs &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; DUOXA1_exp &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; DUOX1_exp &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.905 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.95 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.892 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.915 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18053045 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.00 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Spearman &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1043 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BUB1_exp &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; C10orf32_exp &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.796 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.95 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.818 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.772 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 339618298 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.00 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Spearman &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1043 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BRAF_exp &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; DTL_exp &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.015 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.95 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.048 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.077 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 186283211 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.63 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Spearman &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1043 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+ 
+## Pearson Correlation 
+ 
+
+
+```r
+ bind_rows(r1,r2,r3 ) 
+```
+
+```
+Parameter1 |   Parameter2 |   rho |         95% CI |        S |         p
+-------------------------------------------------------------------------
+DUOXA1_exp |    DUOX1_exp |  0.90 | [ 0.89,  0.92] | 1.81e+07 | &lt; .001***
+BUB1_exp   | C10orf32_exp | -0.80 | [-0.82, -0.77] | 3.40e+08 | &lt; .001***
+BRAF_exp   |      DTL_exp |  0.01 | [-0.05,  0.08] | 1.86e+08 | 0.630    
+
+Observations: 1043
+```
+
+
+
+
+---
+
+## Spearman Correlation: Scatter Plot
+  
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga) + 
+  aes(BUB1_exp, C10orf32_exp) + 
+  geom_point() + 
+  annotate(geom = "text", x = 1000, y = 4000, 
+           label = paste("r = ", round(r2$r, 2), sep = ""),
+           color = "red")
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-28-1.png" width="100%" /&gt;
+]
+]
+
+
+---
+
+## Correllation Matrix 
+ 
+
+
+```r
+tcga %&gt;% 
+  select(DUOXA1_exp, DUOX1_exp, BUB1_exp, BRAF_exp, DTL_exp ) %&gt;%
+  cor( method = c("spearman")) %&gt;% round(.,2)
+```
+
+```
+           DUOXA1_exp DUOX1_exp BUB1_exp BRAF_exp DTL_exp
+DUOXA1_exp       1.00      0.90     0.67    -0.11    0.62
+DUOX1_exp        0.90      1.00     0.66    -0.10    0.62
+BUB1_exp         0.67      0.66     1.00    -0.01    0.88
+BRAF_exp        -0.11     -0.10    -0.01     1.00    0.01
+DTL_exp          0.62      0.62     0.88     0.01    1.00
+```
+
+
+
+---
+
+
+# Regression 
+
+
+- Univariate regresssion
+
+- MultivarIABLE reression
+
+
+---
+
+
+## Univariate Regression 
+
+ Simple linear regression: 1 predictor
+ 
+ 
+`\(Y_{i}\)` = `\(\beta_{0}\)` + `\(\beta_{1}\)` `\(X_{1}\)` + `\(\epsilon_{i}\)` where `\(\epsilon_{i}\)` ~ `\(N(0, \sigma^{2})\)`
+
+- `\(X_{1}\)` is the predictor or independent variable.
+- `\(\beta_{0}\)` is the intercept and `\(\beta_{1}\)` is the slope
+- `\(\epsilon\)` is the error vector (residuals)
+- `\(Y_{i}\)` is the response vector or dependent variable
+
+
+---
+
+
+## Regression assumptions
+
+ There are four assumptions associated with a linear regression model:
+
+- Linearity: The relationship between X and Y is linear.
+- Independence: Observations are independent of each other.
+- Homoscedasticity: The variance of residuals is the same for any value of X.
+- Normality: For any fixed value of X, Y is normally distributed.
+
+
+---
+
+
+## Scatter Plot
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point() + 
+  annotate(geom = "text", x = 10, y = 25000, 
+           label = paste("r = ", round(r1$r, 4), sep = ""),
+           color = "red")
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-30-1.png" width="100%" /&gt;
+]
+]
+
+
+---
+
+
+##  Simple linear regression 
+ 
+
+
+```r
+ lm(DUOX1_exp ~ DUOXA1_exp, data = tcga)
+```
+
+```
+
+Call:
+lm(formula = DUOX1_exp ~ DUOXA1_exp, data = tcga)
+
+Coefficients:
+(Intercept)   DUOXA1_exp  
+     84.712        3.034  
+```
+ 
+
+
+---
+
+
+##  Simple linear regression 
+ 
+
+
+```r
+summary( lmfit &lt;-  lm(DUOX1_exp ~ DUOXA1_exp, data = tcga) )
+```
+
+```
+
+Call:
+lm(formula = DUOX1_exp ~ DUOXA1_exp, data = tcga)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8924.8   -85.3   -70.7    41.8  5917.1 
+
+Coefficients:
+            Estimate Std. Error t value             Pr(&gt;|t|)    
+(Intercept) 84.71188   31.04085   2.729              0.00646 ** 
+DUOXA1_exp   3.03400    0.04057  74.789 &lt; 0.0000000000000002 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 824.9 on 1041 degrees of freedom
+Multiple R-squared:  0.8431,	Adjusted R-squared:  0.8429 
+F-statistic:  5593 on 1 and 1041 DF,  p-value: &lt; 0.00000000000000022
+```
+
+---
+
+ 
+
+
+##  Simple linear regression 
+ 
+ 
+Residual standard error: 824.9 on 1041 degrees of freedom
+
+Multiple R-squared:  0.8431,	Adjusted R-squared:  0.8429 
+
+F-statistic:  5593 on 1 and 1041 DF,  p-value: &lt; 0.00000000000000022
+
+---
+
+
+
+## Scatter Plot with linear regression line
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga, aes(DUOXA1_exp, DUOX1_exp )) + 
+  geom_point() +  
+  geom_smooth(method = "lm", se=FALSE, color="purple", formula = y ~ x, size = 1) +
+  annotate(geom = "text", x = 10, y = 25000, 
+           label = paste("r = ", round(r1$r, 3), sep = ""),
+           color = "red") +
+  annotate(geom = "text", x = 1000, y = 20000, 
+           label = paste("DUOX1_exp = 84.7 + 3.03*DUOXA1_exp", sep = ""),  
+           color = "purple")
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-33-1.png" width="100%" /&gt;
+]
+]
+
+  
+---
+
+## Zoom in on the Scatter Plot with linear regression line
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga, aes(DUOXA1_exp, DUOX1_exp)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se=FALSE, color="purple", formula = y ~ x, size = 1) +
+  annotate(geom = "text", x = 10, y = 25000, 
+           label = paste("r = ", round(r1$r, 2), sep = ""), color = "red") +
+  annotate(geom = "text", x = 1000, y = 20000, 
+           label = paste("DUOX1_exp = 84.7 + 3.03*DUOXA1_exp", sep = ""),  color = "purple") + 
+  coord_cartesian(ylim=c(0, 500), xlim=c(0, 250))
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-34-1.png" width="100%" /&gt;
+]
+]
+ 
+  
+
+---
+
+## Residual Scatter Plot 
+ 
+ 
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+resid &lt;- data.frame(fitted = lmfit$fitted.values , residuals = lmfit$residuals )
+ggplot( resid, aes(fitted, residuals) ) + 
+    geom_point()  
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-35-1.png" width="100%" /&gt;
+]
+]
+ 
+
+
+ 
+
+
+
+---
+
+
+##  Simple linear regression - sqrt transformation
+ 
+
+
+```r
+summary(lmfit &lt;- lm(sqrt(DUOX1_exp) ~ sqrt(DUOXA1_exp), data = tcga))
+```
+
+```
+
+Call:
+lm(formula = sqrt(DUOX1_exp) ~ sqrt(DUOXA1_exp), data = tcga)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-46.781  -2.707  -0.760   2.286  37.547 
+
+Coefficients:
+                 Estimate Std. Error t value            Pr(&gt;|t|)    
+(Intercept)       3.57802    0.29514   12.12 &lt;0.0000000000000002 ***
+sqrt(DUOXA1_exp)  1.64382    0.01415  116.14 &lt;0.0000000000000002 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.94 on 1041 degrees of freedom
+Multiple R-squared:  0.9284,	Adjusted R-squared:  0.9283 
+F-statistic: 1.349e+04 on 1 and 1041 DF,  p-value: &lt; 0.00000000000000022
+```
+
+
+---
+
+
+##  Simple linear regression - sqrt transformation
+ 
+ 
+Residual standard error: 6.94 on 1041 degrees of freedom
+
+Multiple R-squared:  0.9284,	Adjusted R-squared:  0.9283 
+
+F-statistic: 1.349e+04 on 1 and 1041 DF,  p-value: &lt; 0.00000000000000022
+
+---
+
+
+##  Simple linear regression - sqrt transformation
+ 
+
+
+```r
+names( lmfit )
+```
+
+```
+ [1] "coefficients"  "residuals"     "effects"       "rank"         
+ [5] "fitted.values" "assign"        "qr"            "df.residual"  
+ [9] "xlevels"       "call"          "terms"         "model"        
+```
+
+```r
+names( summary(lmfit) )
+```
+
+```
+ [1] "call"          "terms"         "residuals"     "coefficients" 
+ [5] "aliased"       "sigma"         "df"            "r.squared"    
+ [9] "adj.r.squared" "fstatistic"    "cov.unscaled" 
+```
+ 
+---
+
+## Residual Scatter Plot - sqrt transformation
+ 
+ 
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+resid &lt;- data.frame(fitted = lmfit$fitted.values , residuals = lmfit$residuals )
+ggplot( resid, aes(fitted, residuals) ) + 
+    geom_point()  
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-38-1.png" width="100%" /&gt;
+]
+]
+ 
+ 
+
+---
+
+## Scatter Plot with linear regression line - sqrt transformation
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga, aes(sqrt(DUOXA1_exp), sqrt(DUOX1_exp) )) + 
+  geom_point() +  
+  geom_smooth(method = "lm", se=FALSE, color="purple", formula = y ~ x, size = 1) +
+ 
+  annotate(geom = "text", x = 50, y = 1.75, 
+           label = paste("sqrt(DUOX1_exp) = 3.58 + 1.64*srqt(DUOXA1_exp)", sep = ""),  
+           color = "purple")
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-39-1.png" width="100%" /&gt;
+]
+]
+ 
+
+ 
+  
+
+---
+
+## Multiple Regression 
+
+ More than one predictor
+ 
+`\(Y_{i}\)` = `\(\beta_{0}\)` + `\(\beta_{1}\)` `\(X_{1}\)` + `\(\beta_{2}\)` `\(X_{2}\)` + ... + `\(\beta_{k}\)` `\(X_{k}\)` + `\(\epsilon_{i}\)` for i = 1, 2, ..., n 
+
+
+`\(\epsilon_{i}\)` ~ `\(N(0, \sigma^{2})\)`
+
+- `\(Y_{i}\)` is the value of the response for the ith case
+- `\(\epsilon_{i}\)` ~ `\(N(0, \sigma^{2})\)` (as before)
+- `\(X_{i, k}\)` is the value of the _k_ th explanatory variable for the _i_ th case.
+- `\(\beta_{0}\)` is the intercept 
+- `\(\beta_{1}\)`, `\(\beta_{2}\)`, ... `\(\beta_{k}\)` are the regression coefficients for the explanatory variables
+- `\(\epsilon\)` is the error vector (residuals)
+- Parameters as usual include all of the `\(\beta\)`’s as well as `\(\sigma^{2}\)`. These need to be estimated from the data.
+   
+
+
+---
+
+## Multiple Regression 
+
+ More than one predictor
+ 
+`\(Y_{i}\)` = `\(\beta_{0}\)` + `\(\beta_{1}\)` `\(X_{1}\)` + `\(\beta_{2}\)` `\(X_{2}\)` + ... + `\(\beta_{k}\)` `\(X_{k}\)` + `\(\epsilon_{i}\)` for i = 1, 2, ..., n 
+
+- Here we're using _k_ for the number of predictor variables, which means we have _k_+1 regression parameters (the 
+`\(\beta\)` coefficients).
+
+- We assume that the `\(\epsilon_{i}\)` have a normal distribution with mean 0 and constant variance 
+`\(\sigma^{2}\)`. These are the same assumptions that we used in simple regression with one predictor.
+
+- The subscript _i_ refers to the ith individual or unit in the population. In the notation for the predictor.s, the subscript
+ following _i_ simply denotes which predictor it is.
+
+- The word "linear" in "multiple linear regression" refers to the fact that the model is linear in the parameters, 
+`\(\beta_{0}\)`, `\(\beta_{1}\)`, `\(\beta_{2}\)`, `\(\beta_{k}\)`. This means that each parameter multiplies a predictor, while the regression function is a sum of these 
+"parameter times predictor" terms.  
+
+
+---
+##  Multiple regression 
+ 
+
+
+```r
+ lm(DUOX1_exp ~ DUOXA1_exp + gender, data = tcga)
+```
+
+```
+
+Call:
+lm(formula = DUOX1_exp ~ DUOXA1_exp + gender, data = tcga)
+
+Coefficients:
+(Intercept)   DUOXA1_exp   genderMALE  
+    149.385        3.033      -93.292  
+```
+
+
+---
+
+
+
+##  Multiple regression 
+ 
+
+
+```r
+summary( mlmfit&lt;- lm(DUOX1_exp ~ DUOXA1_exp  + gender, data = tcga) )
+```
+
+```
+
+Call:
+lm(formula = DUOX1_exp ~ DUOXA1_exp + gender, data = tcga)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-8986.8  -144.2   -47.9    49.4  5946.5 
+
+Coefficients:
+             Estimate Std. Error t value             Pr(&gt;|t|)    
+(Intercept) 149.38510   49.25297   3.033              0.00248 ** 
+DUOXA1_exp    3.03338    0.04053  74.837 &lt; 0.0000000000000002 ***
+genderMALE  -93.29234   55.19471  -1.690              0.09128 .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 824.1 on 1040 degrees of freedom
+Multiple R-squared:  0.8435,	Adjusted R-squared:  0.8432 
+F-statistic:  2803 on 2 and 1040 DF,  p-value: &lt; 0.00000000000000022
+```
+ 
+
+
+---
+
+
+##  Multivariable regression
+ 
+Residual standard error: 824.1 on 1040 degrees of freedom
+
+Multiple R-squared:  0.8435,	Adjusted R-squared:  0.8432 
+
+F-statistic:  2803 on 2 and 1040 DF,  p-value: &lt; 0.00000000000000022
+
+ 
+
+---
+
+##  Multivariable regression 
+ 
+
+
+```r
+tcgareg &lt;- tcga %&gt;% filter(race %in% c("ASIAN","BLACK OR AFRICAN AMERICAN","WHITE"))
+summary( mlmfit2 &lt;- lm(DUOX1_exp ~ DUOXA1_exp  + gender + race , data = tcgareg) )
+```
+
+```
+
+Call:
+lm(formula = DUOX1_exp ~ DUOXA1_exp + gender + race, data = tcgareg)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9027.2  -136.7   -41.1    44.4  5940.3 
+
+Coefficients:
+                                Estimate Std. Error t value
+(Intercept)                    252.85311  193.91015   1.304
+DUOXA1_exp                       3.04470    0.04125  73.810
+genderMALE                     -92.88159   55.89298  -1.662
+raceBLACK OR AFRICAN AMERICAN -107.22323  206.76943  -0.519
+raceWHITE                     -111.47975  191.70277  -0.582
+                                         Pr(&gt;|t|)    
+(Intercept)                                0.1925    
+DUOXA1_exp                    &lt;0.0000000000000002 ***
+genderMALE                                 0.0969 .  
+raceBLACK OR AFRICAN AMERICAN              0.6042    
+raceWHITE                                  0.5610    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 825.8 on 1014 degrees of freedom
+Multiple R-squared:  0.844,	Adjusted R-squared:  0.8434 
+F-statistic:  1371 on 4 and 1014 DF,  p-value: &lt; 0.00000000000000022
+```
+---
+
+
+##  Multivariable regression
+ 
+ 
+Residual standard error: 825.8 on 1014 degrees of freedom
+
+Multiple R-squared:  0.844,	Adjusted R-squared:  0.8434 
+
+F-statistic:  1371 on 4 and 1014 DF,  p-value: &lt; 0.00000000000000022
+ 
+
+---
+ 
+
+
+## Thank you! 
+  
+  - The end
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="libs/remark-0.14.0.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "%current%",
+"highlightStyle": "atom-one-light",
+"highlightLines": true,
+"ratio": "16:9",
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

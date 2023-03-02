@@ -1,0 +1,1257 @@
+---
+title: "Lea.orange[R]ning about Statistics - YEAH!!!"
+subtitle: "Correlation, Scatterplots and Regression! "
+author: 
+  - Zachary Thompson 
+institute: "Moffitt Cancer Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    chakra: libs/remark-0.14.0.min.js
+    css: 
+      - css/moffitt-xaringan.css
+      - css/moffitt-xaringan-extra.css
+      - css/tachyons.moffitt.css
+    seal: false
+    nature:
+      titleSlideClass: ["bottom", "left"]
+      slideNumberFormat: "%current%"
+      highlightStyle: atom-one-light
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: true
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  fig.width=9, fig.height=3.5, fig.retina=3,
+  out.width = "100%",
+  cache = FALSE,
+  echo = TRUE,
+  message = FALSE, 
+  warning = FALSE, 
+  hiline = TRUE,
+   comment = NA 
+)
+options(width = 70)
+
+
+  #library(easystats)
+  library(tidyverse)
+  library(kableExtra)
+  library(ggplot2)
+  library(janitor)
+  library(gridExtra)
+  library(broom)
+  library(here)
+  library(correlation)
+   
+
+# https://education.arcus.chop.edu/annotated-output-lm/
+
+   
+# # MERGE and making smoking variable  
+  # clinical <- read_csv(file = "F:\\myGitRepo\\Intro_to_R_2022\\data\\tcga_clinical.txt" )
+  # geneexp <- read_csv(file = "F:\\myGitRepo\\Intro_to_R_2022\\data\\tcga_gene_exp.txt" )
+
+# tcga <- left_join(clinical, geneexp, by = "bcr_patient_barcode")
+#  
+# 
+# 
+# tcga <- tcga %>% mutate(
+#   #smoking = tobacco_smoking_history,
+#   smoking = case_when(
+#     tobacco_smoking_history %in% c(
+#       "Current reformed smoker for < or = 15 years",
+#       "Current reformed smoker for > 15 years",
+#       "Current Reformed Smoker, Duration Not Specified"
+#     ) ~ "Former",
+#     tobacco_smoking_history %in% c("Current smoker") ~ "Current",
+#     tobacco_smoking_history %in% c("Lifelong Non-smoker") ~ "Never",
+#     is.na(tobacco_smoking_history) ~ NA_character_
+#   )
+# )
+
+#table(tcga$smoking, useNA = "always")
+
+
+```
+
+name: title
+class: left bottom hide-count
+
+<!-- Slide Extras -->
+
+```{r xaringan-extras, echo=FALSE, results="asis"}
+# remotes::install_github("gadenbuie/xaringanExtra")
+xaringanExtra::use_xaringan_extra(c(
+  "tile_view"
+  # "editable",
+  # "animate",
+  # "panelset"
+))
+```
+
+```{r xaringan-panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+
+<!-- Title Slide -->
+<!-- <div class="talk-logo"></div> -->
+
+.talk-meta[
+.talk-title[
+# `r rmarkdown::metadata$title`
+
+`r rmarkdown::metadata$subtitle`
+]
+
+.talk-author[
+`r paste(rmarkdown::metadata$author, collapse = " &middot; ")`<br>
+.moffitt-gray[`r paste(rmarkdown::metadata$institute, collapse = ", ")`]
+]
+
+.talk-date.moffitt-gray[
+`r knitr::knit(text = rmarkdown::metadata$date)`
+]
+]
+
+
+```{css echo=FALSE}
+/* Define title slide image or logo here */
+.talk-logo {
+  width: 400px;
+  height: 750px;
+  position: absolute;
+  top: 6%;
+  right: 7%;
+  /* background-image: url('img/r4ds-cover.png'); */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: contain;
+}
+```
+
+<!-- Moffitt Logo and Slide Border ----
+
+All slides except "title" and "inverse" slides
+have the Moffitt Color Bar and logo.
+
+Additional classes are provided to disable both:
+
+- `class: no-logo` hides the logo
+- `class: no-border` hides the border
+
+or to force either to be shown
+
+- `class: moffitt-slide-logo` shows the logo
+- `class: moffitt-slide-border` shows the border
+-->
+
+---
+
+## What you will learn to run
+ 
+ 
+- Scatterplots
+
+- Correlation
+
+- Univariate regresssion
+
+- MultivarIABLE reression
+
+
+---
+ 
+## Data prep: here()
+ 
+
+```{r comment=NA}
+ 
+ here()
+ here("data")
+ here("data","tcga-clinical.txt")
+ here("data","tcga-gene-exp.txt")
+
+```
+
+---
+ 
+## Data prep: load
+ 
+
+```{r comment=NA}
+
+
+clinical <- read_csv(file = here("data","tcga_clinical.txt"))
+geneexp <- read_csv(file = here("data","tcga_gene_exp.txt"))
+  
+```
+ 
+
+---
+ 
+## Data prep: merge
+ 
+
+```{r comment=NA}
+ 
+  tcgatest <- left_join(clinical, geneexp)
+  tcga <- left_join(clinical, geneexp, by = "bcr_patient_barcode")
+
+     intersect(names(clinical), names(geneexp))
+     dim(tcgatest)
+     dim(tcga) 
+
+ 
+```
+
+ 
+---
+ 
+
+## Data prep: mutate
+ 
+
+```{r comment=NA}
+ 
+  tcga <- tcga %>% mutate( 
+  smoking = case_when(
+    tobacco_smoking_history %in% c(
+      "Current reformed smoker for < or = 15 years",
+      "Current reformed smoker for > 15 years",
+      "Current Reformed Smoker, Duration Not Specified"
+    ) ~ "Former",
+    tobacco_smoking_history %in% c("Current smoker") ~ "Current",
+    tobacco_smoking_history %in% c("Lifelong Non-smoker") ~ "Never",
+    is.na(tobacco_smoking_history) ~ NA_character_
+  )
+)
+```
+
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geom0, echo = TRUE, fig.show = "hide"}
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point() 
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geom0", echo = FALSE}
+```
+]
+]
+ 
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geom0fill, echo = TRUE, fig.show = "hide"}
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(colour = gender)) 
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geom0fill", echo = FALSE}
+```
+]
+]
+ 
+
+
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geomsmoking, echo = TRUE, fig.show = "hide"}
+ggplot(tcga %>% filter(!is.na(smoking))) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(shape = smoking, colour = smoking)) 
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geomsmoking", echo = FALSE}
+```
+]
+]
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geomsmoking2, echo = TRUE, fig.show = "hide"}
+ggplot(tcga %>% filter(!is.na(smoking))) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(shape = smoking, colour = gender)) 
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geomsmoking2", echo = FALSE}
+```
+]
+]
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geomsmoking3, echo = TRUE, fig.show = "hide"}
+ggplot(tcga %>% filter(!is.na(smoking))) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(shape = smoking, colour = gender))  + 
+  scale_color_brewer(palette="Dark2") + 
+  theme_minimal()
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geomsmoking3", echo = FALSE}
+```
+]
+]
+ 
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geomsmoking4, echo = TRUE, fig.show = "hide"}
+ggplot(tcga %>% filter(!is.na(smoking))) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(shape = smoking, colour = gender))  + 
+  scale_color_brewer(palette="Spectral") + 
+  theme_dark()
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geomsmoking4", echo = FALSE}
+```
+]
+]
+  
+
+---
+
+## Getting help 
+
+- In R console 
+
+> library(ggplot2)
+
+> ?scale_color_brewer
+ 
+> ?theme
+
+
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geom0size, echo = TRUE, fig.show = "hide"}
+
+
+
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(size = stage,colour = weight)) 
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geom0size", echo = FALSE}
+```
+]
+]
+ 
+
+
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geom0size1, echo = TRUE, fig.show = "hide"}
+
+
+
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(size = stage,colour = weight))   + 
+  scale_color_distiller(palette="Oranges") + 
+  theme_dark()
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geom0size1", echo = FALSE}
+```
+]
+]
+ 
+
+
+
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geom0size2, echo = TRUE, fig.show = "hide"}
+
+
+
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(size = stage,colour = weight, shape = gender)) 
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geom0size2", echo = FALSE}
+```
+]
+]
+ 
+
+
+ 
+---
+
+## Scatter plots 
+
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geom0size3, echo = TRUE, fig.show = "hide"}
+
+
+
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point(aes(size = stage,colour = weight, 
+                 shape = gender, alpha = .5)) 
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geom0size3", echo = FALSE}
+```
+]
+]
+ 
+
+ 
+
+
+
+---
+ 
+# Correlation 
+ 
+A correlation coefficient is a numerical measure of some type of correlation, meaning a statistical relationship between two variables.  
+
+Several types of correlation coefficient exist, each with their own definition and own range of usability and characteristics. They all assume values in the range from −1 to +1, where ±1 indicates the strongest possible agreement and 0 no agreement.
+
+Very common :
+
+ Pearson
+ &  
+ Spearman
+ 
+---
+ 
+## Pearson Correlation 
+
+ The .bg-orange.white[Pearson product-moment correlation coefficient], also known as r or Pearson's r, is a measure of the strength and direction of the linear relationship between two variables that is defined as the covariance of the variables divided by the product of their standard deviations.  Pearson's r is the best-known and most commonly used type of correlation coefficient. A relationship is linear when a change in one variable is associated with a proportional change in the other variable.
+ 
+$r_{xy}$ = $\frac{ \sum_{i = 1}^{n}  (x_{i}-  \overline{x} )(y_{i}- \overline{y})}{\sqrt(\sum_{i = 1}^{n}  (x_{i}-  \overline{x} )^{2})\sqrt(\sum_{i = 1}^{n}  (y_{i}-  \overline{y} )^{2})}$ 
+
+*   n is the sample size
+*   $x_{i}$ and $y_{i}$  are the individual sample points indexed with i
+*   $\overline{x} = \frac{1}{n}\sum_{i = 1}^{n} x_{i}$ is the smaple mean of x (similarly y)
+
+
+
+---
+ 
+## Pearson Correlation 
+ 
+
+```{r  comment=NA}
+
+ 
+r1 <- tcga %>% correlation::cor_test("DUOXA1_exp", 
+                                          "DUOX1_exp", 
+                                          method = c("pearson") ) 
+ 
+r2 <- tcga %>% correlation::cor_test("BUB1_exp",
+                                          "C10orf32_exp",
+                                          method = c("pearson") ) 
+ 
+r3 <- tcga %>% correlation::cor_test("BRAF_exp", 
+                                          "DTL_exp", 
+                                          method = c("pearson") )
+ 
+```
+
+
+
+---
+ 
+## Pearson Correlation 
+ 
+
+```{r comment=NA}
+ bind_rows(r1,r2,r3 ) 
+
+```
+
+
+
+
+
+
+---
+ 
+## Pearson Correlation 
+ 
+
+```{r comment=NA}
+ knitr::kable(bind_rows(r1,r2,r3 ), format = 'html', digits = 3) %>%
+  kable_styling(font_size = 12)
+
+```
+
+
+
+
+
+---
+
+## Pearson Correlation: Scatter Plot
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geom, echo = TRUE, fig.show = "hide"}
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point() + 
+  annotate(geom = "text", x = 10, y = 25000, 
+           label = paste("r = ", round(r1$r, 2), sep = ""),
+           color = "red")
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geom", echo = FALSE}
+```
+]
+]
+ 
+
+
+---
+
+## Pearson Correlation: Scatter Plot
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geom2.2, echo = TRUE, fig.show = "hide"}
+ggplot(tcga) + 
+  aes(BUB1_exp, C10orf32_exp) + 
+  geom_point() + 
+  annotate(geom = "text", x = 10, y = 3800, 
+           label = paste("r = ", round(r2$r, 2), sep = ""),
+           color = "red")
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geom2.2", echo = FALSE}
+```
+]
+]
+ 
+
+
+
+ 
+
+---
+
+## Pearson Correlation: Scatter Plot
+  
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geom3, echo = TRUE, fig.show = "hide"}
+ggplot(tcga) + 
+  aes(BRAF_exp, DTL_exp) + 
+  geom_point() + 
+  annotate(geom = "text", x = 0, y = 1100, 
+           label = paste("r = ", round(r3$r, 2), sep = ""),  
+           color = "red")
+ 
+
+ 
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geom3", echo = FALSE}
+```
+]
+]
+
+ 
+
+ 
+
+
+
+
+---
+
+## Correllation Matrix 
+ 
+
+```{r comment=NA}
+tcga %>% 
+  select(DUOXA1_exp, DUOX1_exp, BUB1_exp, BRAF_exp, DTL_exp ) %>%
+  cor() %>% round(.,2)
+
+```
+
+
+---
+
+
+## Spearman Correlation 
+
+The Spearman correlation evaluates the monotonic or non-linear relationship between two continuous or ordinal variables. It is a nonparametric measure of rank correlation (statistical dependence between the rankings of two variables). In a monotonic relationship, the variables tend to change together, but not necessarily at a constant rate. The Spearman correlation coefficient is based on the ranked values for each variable rather than the raw data.
+ 
+$\rho$ = 1 - $\frac{6 \sum_{}d^{2}_{i} }{n(n^{2}-1) }$ 
+
+*  $d$ is the difference in ranks  
+
+
+
+---
+
+
+
+## Example of monotonic relationship
+
+
+ 
+```{r echo=FALSE, comment=NA}
+ 
+
+x2 <- x <- seq(10,20,.25)
+y2 <- (x-15)^3 + 100
+pdata <-  data.frame(x=x2,y=y2) 
+ggplot(pdata, aes(x,y)) + geom_point() 
+ 
+
+```
+
+---
+
+
+
+## Example of monotonic relationship 2
+
+
+ 
+```{r echo=FALSE, comment=NA}
+ 
+
+x2 <- x <- seq(1,5,.25)
+y2 <- exp(-x)
+pdata <-  data.frame(x=x2,y=y2) 
+ggplot(pdata, aes(x,y)) + geom_point() 
+ 
+
+```
+
+
+
+---
+
+
+ 
+
+## Spearman Correlation 
+ 
+
+```{r  comment=NA}
+
+ 
+r1 <- tcga %>% correlation::cor_test("DUOXA1_exp", 
+                                          "DUOX1_exp", 
+                                          method = c("spearman") ) 
+ 
+r2 <- tcga %>% correlation::cor_test("BUB1_exp",
+                                          "C10orf32_exp",
+                                          method = c("spearman") ) 
+ 
+r3 <- tcga %>% correlation::cor_test("BRAF_exp", 
+                                          "DTL_exp", 
+                                          method = c("spearman") )
+ 
+```
+
+---
+ 
+## Spearman Correlation 
+ 
+
+```{r comment=NA}
+ knitr::kable(bind_rows(r1, r2, r3), format = 'html', digits = 3) %>%
+  kable_styling(font_size = 12)
+
+```
+
+---
+ 
+## Pearson Correlation 
+ 
+
+```{r comment=NA}
+ bind_rows(r1,r2,r3 ) 
+
+```
+
+
+
+
+---
+
+## Spearman Correlation: Scatter Plot
+  
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geom2, echo = TRUE, fig.show = "hide"}
+
+ggplot(tcga) + 
+  aes(BUB1_exp, C10orf32_exp) + 
+  geom_point() + 
+  annotate(geom = "text", x = 1000, y = 4000, 
+           label = paste("r = ", round(r2$r, 2), sep = ""),
+           color = "red")
+ 
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geom2", echo = FALSE}
+```
+]
+]
+
+
+---
+
+## Correllation Matrix 
+ 
+
+```{r comment=NA}
+tcga %>% 
+  select(DUOXA1_exp, DUOX1_exp, BUB1_exp, BRAF_exp, DTL_exp ) %>%
+  cor( method = c("spearman")) %>% round(.,2)
+
+```
+
+
+
+---
+
+
+# Regression 
+
+
+- Univariate regresssion
+
+- MultivarIABLE reression
+
+
+---
+
+
+## Univariate Regression 
+
+ Simple linear regression: 1 predictor
+ 
+ 
+$Y_{i}$ = $\beta_{0}$ + $\beta_{1}$ $X_{1}$ + $\epsilon_{i}$ where $\epsilon_{i}$ ~ $N(0, \sigma^{2})$
+
+- $X_{1}$ is the predictor or independent variable.
+- $\beta_{0}$ is the intercept and $\beta_{1}$ is the slope
+- $\epsilon$ is the error vector (residuals)
+- $Y_{i}$ is the response vector or dependent variable
+
+
+---
+
+
+## Regression assumptions
+
+ There are four assumptions associated with a linear regression model:
+
+- Linearity: The relationship between X and Y is linear.
+- Independence: Observations are independent of each other.
+- Homoscedasticity: The variance of residuals is the same for any value of X.
+- Normality: For any fixed value of X, Y is normally distributed.
+
+
+---
+
+
+## Scatter Plot
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geomagain, echo = TRUE, fig.show = "hide"}
+ggplot(tcga) + 
+  aes(DUOXA1_exp, DUOX1_exp) + 
+  geom_point() + 
+  annotate(geom = "text", x = 10, y = 25000, 
+           label = paste("r = ", round(r1$r, 4), sep = ""),
+           color = "red")
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geomagain", echo = FALSE}
+```
+]
+]
+
+
+---
+
+
+##  Simple linear regression 
+ 
+
+```{r comment=NA}
+
+ lm(DUOX1_exp ~ DUOXA1_exp, data = tcga)
+
+```
+ 
+
+
+---
+
+
+##  Simple linear regression 
+ 
+
+```{r comment=NA}
+
+summary( lmfit <-  lm(DUOX1_exp ~ DUOXA1_exp, data = tcga) )
+ 
+```
+
+---
+
+ 
+
+
+##  Simple linear regression 
+ 
+ 
+Residual standard error: 824.9 on 1041 degrees of freedom
+
+Multiple R-squared:  0.8431,	Adjusted R-squared:  0.8429 
+
+F-statistic:  5593 on 1 and 1041 DF,  p-value: < 0.00000000000000022
+
+---
+
+
+
+## Scatter Plot with linear regression line
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geomregx, echo = TRUE, fig.show = "hide"}
+ggplot(tcga, aes(DUOXA1_exp, DUOX1_exp )) + 
+  geom_point() +  
+  geom_smooth(method = "lm", se=FALSE, color="purple", formula = y ~ x, size = 1) +
+  annotate(geom = "text", x = 10, y = 25000, 
+           label = paste("r = ", round(r1$r, 3), sep = ""),
+           color = "red") +
+  annotate(geom = "text", x = 1000, y = 20000, 
+           label = paste("DUOX1_exp = 84.7 + 3.03*DUOXA1_exp", sep = ""),  
+           color = "purple")
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geomregx", echo = FALSE}
+```
+]
+]
+
+  
+---
+
+## Zoom in on the Scatter Plot with linear regression line
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geomregzoom1, echo = TRUE, fig.show = "hide"}
+ggplot(tcga, aes(DUOXA1_exp, DUOX1_exp)) + 
+  geom_point() + 
+  geom_smooth(method = "lm", se=FALSE, color="purple", formula = y ~ x, size = 1) +
+  annotate(geom = "text", x = 10, y = 25000, 
+           label = paste("r = ", round(r1$r, 2), sep = ""), color = "red") +
+  annotate(geom = "text", x = 1000, y = 20000, 
+           label = paste("DUOX1_exp = 84.7 + 3.03*DUOXA1_exp", sep = ""),  color = "purple") + 
+  coord_cartesian(ylim=c(0, 500), xlim=c(0, 250))
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geomregzoom1", echo = FALSE}
+```
+]
+]
+ 
+  
+
+---
+
+## Residual Scatter Plot 
+ 
+ 
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geomregres1, echo = TRUE, fig.show = "hide"}
+ 
+resid <- data.frame(fitted = lmfit$fitted.values , residuals = lmfit$residuals )
+ggplot( resid, aes(fitted, residuals) ) + 
+    geom_point()  
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geomregres1", echo = FALSE}
+```
+]
+]
+ 
+
+
+ 
+
+
+
+---
+
+
+##  Simple linear regression - sqrt transformation
+ 
+
+```{r comment=NA}
+
+summary(lmfit <- lm(sqrt(DUOX1_exp) ~ sqrt(DUOXA1_exp), data = tcga))
+ 
+```
+
+
+---
+
+
+##  Simple linear regression - sqrt transformation
+ 
+ 
+Residual standard error: 6.94 on 1041 degrees of freedom
+
+Multiple R-squared:  0.9284,	Adjusted R-squared:  0.9283 
+
+F-statistic: 1.349e+04 on 1 and 1041 DF,  p-value: < 0.00000000000000022
+
+---
+
+
+##  Simple linear regression - sqrt transformation
+ 
+
+```{r comment=NA}
+
+names( lmfit )
+names( summary(lmfit) )
+ 
+```
+ 
+---
+
+## Residual Scatter Plot - sqrt transformation
+ 
+ 
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geomregres, echo = TRUE, fig.show = "hide"}
+ 
+resid <- data.frame(fitted = lmfit$fitted.values , residuals = lmfit$residuals )
+ggplot( resid, aes(fitted, residuals) ) + 
+    geom_point()  
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geomregres", echo = FALSE}
+```
+]
+]
+ 
+ 
+
+---
+
+## Scatter Plot with linear regression line - sqrt transformation
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r geomreg, echo = TRUE, fig.show = "hide"}
+ggplot(tcga, aes(sqrt(DUOXA1_exp), sqrt(DUOX1_exp) )) + 
+  geom_point() +  
+  geom_smooth(method = "lm", se=FALSE, color="purple", formula = y ~ x, size = 1) +
+ 
+  annotate(geom = "text", x = 50, y = 1.75, 
+           label = paste("sqrt(DUOX1_exp) = 3.58 + 1.64*srqt(DUOXA1_exp)", sep = ""),  
+           color = "purple")
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "geomreg", echo = FALSE}
+```
+]
+]
+ 
+
+ 
+  
+
+---
+
+## Multiple Regression 
+
+ More than one predictor
+ 
+$Y_{i}$ = $\beta_{0}$ + $\beta_{1}$ $X_{1}$ + $\beta_{2}$ $X_{2}$ + ... + $\beta_{k}$ $X_{k}$ + $\epsilon_{i}$ for i = 1, 2, ..., n 
+
+
+$\epsilon_{i}$ ~ $N(0, \sigma^{2})$
+
+- $Y_{i}$ is the value of the response for the ith case
+- $\epsilon_{i}$ ~ $N(0, \sigma^{2})$ (as before)
+- $X_{i, k}$ is the value of the _k_ th explanatory variable for the _i_ th case.
+- $\beta_{0}$ is the intercept 
+- $\beta_{1}$, $\beta_{2}$, ... $\beta_{k}$ are the regression coefficients for the explanatory variables
+- $\epsilon$ is the error vector (residuals)
+- Parameters as usual include all of the $\beta$’s as well as $\sigma^{2}$. These need to be estimated from the data.
+   
+
+
+---
+
+## Multiple Regression 
+
+ More than one predictor
+ 
+$Y_{i}$ = $\beta_{0}$ + $\beta_{1}$ $X_{1}$ + $\beta_{2}$ $X_{2}$ + ... + $\beta_{k}$ $X_{k}$ + $\epsilon_{i}$ for i = 1, 2, ..., n 
+
+- Here we're using _k_ for the number of predictor variables, which means we have _k_+1 regression parameters (the 
+$\beta$ coefficients).
+
+- We assume that the $\epsilon_{i}$ have a normal distribution with mean 0 and constant variance 
+$\sigma^{2}$. These are the same assumptions that we used in simple regression with one predictor.
+
+- The subscript _i_ refers to the ith individual or unit in the population. In the notation for the predictor.s, the subscript
+ following _i_ simply denotes which predictor it is.
+
+- The word "linear" in "multiple linear regression" refers to the fact that the model is linear in the parameters, 
+$\beta_{0}$, $\beta_{1}$, $\beta_{2}$, $\beta_{k}$. This means that each parameter multiplies a predictor, while the regression function is a sum of these 
+"parameter times predictor" terms.  
+
+
+---
+##  Multiple regression 
+ 
+
+```{r comment=NA}
+
+ lm(DUOX1_exp ~ DUOXA1_exp + gender, data = tcga)
+
+```
+
+
+---
+
+
+
+##  Multiple regression 
+ 
+
+```{r comment=NA}
+
+summary( mlmfit<- lm(DUOX1_exp ~ DUOXA1_exp  + gender, data = tcga) )
+
+```
+ 
+
+
+---
+
+
+##  Multivariable regression
+ 
+Residual standard error: 824.1 on 1040 degrees of freedom
+
+Multiple R-squared:  0.8435,	Adjusted R-squared:  0.8432 
+
+F-statistic:  2803 on 2 and 1040 DF,  p-value: < 0.00000000000000022
+
+ 
+
+---
+
+##  Multivariable regression 
+ 
+
+```{r comment=NA}
+tcgareg <- tcga %>% filter(race %in% c("ASIAN","BLACK OR AFRICAN AMERICAN","WHITE"))
+summary( mlmfit2 <- lm(DUOX1_exp ~ DUOXA1_exp  + gender + race , data = tcgareg) )
+
+```
+---
+
+
+##  Multivariable regression
+ 
+ 
+Residual standard error: 825.8 on 1014 degrees of freedom
+
+Multiple R-squared:  0.844,	Adjusted R-squared:  0.8434 
+
+F-statistic:  1371 on 4 and 1014 DF,  p-value: < 0.00000000000000022
+ 
+
+---
+ 
+
+
+## Thank you! 
+  
+  - The end
+

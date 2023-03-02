@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Data wrangling: Part II</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jordan Creed" />
+    <meta name="date" content="2021-06-15" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link rel="stylesheet" href="css/moffitt-xaringan.css" type="text/css" />
+    <link rel="stylesheet" href="css/moffitt-xaringan-extra.css" type="text/css" />
+    <link rel="stylesheet" href="css/tachyons.moffitt.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+name: title
+class: left bottom hide-count
+
+&lt;!-- Slide Extras --&gt;
+
+
+
+&lt;!-- Title Slide --&gt;
+&lt;!-- &lt;div class="talk-logo"&gt;&lt;/div&gt; --&gt;
+
+.talk-meta[
+.talk-title[
+# Data wrangling: Part II
+
+Complex wrangling
+]
+
+.talk-author[
+Jordan Creed&lt;br&gt;
+.moffitt-gray[Moffitt Cancer Center]
+]
+
+.talk-date.moffitt-gray[
+June 15, 2021
+]
+]
+
+
+&lt;style type="text/css"&gt;
+/* Define title slide image or logo here */
+.talk-logo {
+  width: 400px;
+  height: 750px;
+  position: absolute;
+  top: 6%;
+  right: 7%;
+  /* background-image: url('img/r4ds-cover.png'); */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: contain;
+}
+&lt;/style&gt;
+
+&lt;!-- Moffitt Logo and Slide Border ----
+
+All slides except "title" and "inverse" slides
+have the Moffitt Color Bar and logo.
+
+Additional classes are provided to disable both:
+
+- `class: no-logo` hides the logo
+- `class: no-border` hides the border
+
+or to force either to be shown
+
+- `class: moffitt-slide-logo` shows the logo
+- `class: moffitt-slide-border` shows the border
+--&gt;
+
+---
+class: inverse center middle
+
+# Merging datasets
+
+---
+## Mutating `join()` &lt;img src="02_data-wrangling_files/figure-html/dplyr-logo.png" width="10%" align="right"/&gt;
+
+Mutating joins combine variables from two data frames
+
+
+```r
+XXX_join(left_data, right_data,by = "id")
+
+XXX_join(left_data, right_data, by = c("left_id" = "right_id"))
+```
+
+&lt;img src="03_wrangling-continued_files/figure-html/joins-one.png" width="40%" class="center"/&gt;
+
+---
+## Filtering `join()` &lt;img src="02_data-wrangling_files/figure-html/dplyr-logo.png" width="10%" align="right"/&gt;
+
+`semi_join()` : returns rows from "left" data with matching values in "right" 
+data, but only returns columns from "left" data
+
+`anti_join()` : returns rows from "left" data with no matching values in 
+"right" data and only returns columns from "left" data
+
+---
+class: inverse center middle
+
+# Transposing data
+
+---
+## `tidyr` actions &lt;img src="03_wrangling-continued_files/figure-html/tidyr-logo.png" width="10%" align="right"/&gt;
+
+👨‍💻 Tidy data isn't necessarily always long or wide.
+
+`pivot_longer()` and `pivot_wider()` reshape data 
+* `pivot_longer(tibble_name, cols = variable1:variable5, names_to = "year", values_to = "count")`
+* `pivot_wider(tibble_name, id_cols = variable1, names_from = variable2, values_from = variable3)`
+
+There may be times where you need to combine `pivot_wider()` and `pivot_longer()`
+
+---
+class: inverse center middle
+
+# Missing values
+
+---
+## Missing values propagate
+
+
+```r
+NA + 2
+```
+
+```
+## [1] NA
+```
+
+```r
+sum(NA, 6, 12)
+```
+
+```
+## [1] NA
+```
+
+👨‍💻 `filter()` on missing values requires special treatment
+
+**FAILS:** `filter(data, variable == NA)`
+
+**WORKS:** `filter(data, is.na(variable))`
+
+---
+## `tidyr` actions &lt;img src="03_wrangling-continued_files/figure-html/tidyr-logo.png" width="10%" align="right"/&gt;
+
+`drop_na()`, `fill()`, and `replace_na()` format missing values
+* `drop_na(variable2)` : removes rows with NA for that column
+* `fill(variable2)` : fills in missing values with the previous value (up or down)
+* `replace_na(list(variable2 = "replacement value"))` : replaces `NA`s with a specified value
+
+---
+class: inverse center middle
+
+# Basics of working with strings
+
+---
+## `tidyr` actions &lt;img src="03_wrangling-continued_files/figure-html/tidyr-logo.png" width="10%" align="right"/&gt;
+
+`separate()`, `extract()` and `unite()` split and combine character columns
+* `separate(tibble_name, variable1, into = c("new_variable1", "new_variable2"), sep = "-")`
+* `extract(tibble_name, variable1, regex="[[:alnum:]]+)")`
+    * `extract` uses regex which is outside the scope of this class - so we will not be covering this function
+* `unite(tibble_name, "combined_var_name", variable1, variable2, sep = ":")`
+
+---
+
+&lt;img src="03_wrangling-continued_files/figure-html/tidyr-cheatsheet.png" width="75%" class="center"/&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- class: inverse center middle --&gt;
+
+&lt;!-- # Working with strings --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- ## `stringr` &lt;img src="https://raw.githubusercontent.com/tidyverse/stringr/master/man/figures/logo.png" width="10%" align="right"/&gt; --&gt;
+
+&lt;!-- `str_subset(x, pattern)` returns the elements matching the pattern --&gt;
+
+&lt;!-- `str_extract(x, pattern)` returns the text that matches --&gt;
+
+&lt;!-- `str_match(x, pattern)` returns part of the text defined in parentheses --&gt;
+
+&lt;!-- --- --&gt;
+&lt;!-- ## `stringr` &lt;img src="https://raw.githubusercontent.com/tidyverse/stringr/master/man/figures/logo.png" width="10%" align="right"/&gt; --&gt;
+
+&lt;!-- `str_detect(x, pattern)` returns logical value indicating if there is a match --&gt;
+
+&lt;!-- `str_count(x, pattern)` returns the number of matches --&gt;
+
+&lt;!-- `str_locate(x, pattern)` returns the position of the match (start and end) --&gt;
+
+
+&lt;style type="text/css"&gt;
+.blank { 
+  color: white ;
+}
+
+&lt;/style&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="libs/remark-0.14.0.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "%current%",
+"highlightStyle": "atom-one-light",
+"highlightLines": true,
+"ratio": "16:9",
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

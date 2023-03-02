@@ -1,0 +1,550 @@
+---
+title: "Presentation Title"
+subtitle: "Presenting awesome things with style"
+author: 
+  - Jane Doe
+  - John Smith
+institute: "Moffitt Cancer Center"
+date: '`r strftime(Sys.time(), "%B %d, %Y")`'
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    chakra: libs/remark-0.14.0.min.js
+    css: 
+      - css/moffitt-xaringan.css
+      - css/moffitt-xaringan-extra.css
+      - css/tachyons.moffitt.css
+    seal: false
+    nature:
+      titleSlideClass: ["bottom", "left"]
+      slideNumberFormat: "%current%"
+      highlightStyle: atom-one-light
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: true
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+knitr::opts_chunk$set(
+  fig.width=9, fig.height=3.5, fig.retina=3,
+  out.width = "100%",
+  cache = FALSE,
+  echo = TRUE,
+  message = FALSE, 
+  warning = FALSE, 
+  hiline = TRUE
+)
+options(width = 70)
+```
+
+name: title
+class: left bottom hide-count
+
+<!-- Slide Extras -->
+
+```{r xaringan-extras, echo=FALSE, results="asis"}
+# remotes::install_github("gadenbuie/xaringanExtra")
+xaringanExtra::use_xaringan_extra(c(
+  "tile_view"
+  # "editable",
+  # "animate",
+  # "panelset"
+))
+```
+
+<!-- Title Slide -->
+<!-- <div class="talk-logo"></div> -->
+
+.talk-meta[
+.talk-title[
+# `r rmarkdown::metadata$title`
+
+`r rmarkdown::metadata$subtitle`
+]
+
+.talk-author[
+`r paste(rmarkdown::metadata$author, collapse = " &middot; ")`<br>
+.moffitt-gray[`r paste(rmarkdown::metadata$institute, collapse = ", ")`]
+]
+
+.talk-date.moffitt-gray[
+`r knitr::knit(text = rmarkdown::metadata$date)`
+]
+]
+
+
+```{css echo=FALSE}
+/* Define title slide image or logo here */
+.talk-logo {
+  width: 400px;
+  height: 750px;
+  position: absolute;
+  top: 6%;
+  right: 7%;
+  /* background-image: url('img/r4ds-cover.png'); */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: contain;
+}
+```
+
+<!-- Moffitt Logo and Slide Border ----
+
+All slides except "title" and "inverse" slides
+have the Moffitt Color Bar and logo.
+
+Additional classes are provided to disable both:
+
+- `class: no-logo` hides the logo
+- `class: no-border` hides the border
+
+or to force either to be shown
+
+- `class: moffitt-slide-logo` shows the logo
+- `class: moffitt-slide-border` shows the border
+-->
+
+---
+
+## Typography
+
+Text can be **bold**, _italic_, or ~~strikethrough~~.
+
+[Link to another page](another-page).
+
+There should be whitespace between paragraphs.
+
+There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
+
+---
+
+.flex[
+.w-third[
+#### Foreground Colors
+
+- .blue[blue]
+
+- .blue-medium[blue-medium]
+
+- .blue-light[blue-light]
+
+- .green[green]
+
+- .yellow[yellow]
+
+- .orange[orange]
+
+- .pink[pink]
+
+- .red[red]
+
+- .moffitt-gray[moffitt-gray]
+]
+
+.w-third[
+#### Background Colors
+
+- .bg-blue.white[blue]
+
+- .bg-blue-medium[blue-medium]
+
+- .bg-blue-light[blue-light]
+
+- .bg-green[green]
+
+- .bg-yellow[yellow]
+
+- .bg-orange.white[orange]
+
+- .bg-pink[pink]
+
+- .bg-red.white[red]
+
+- .bg-moffitt-gray[moffitt-gray]
+]
+
+.w-third[
+#### Color Classes
+
+- Foreground  
+  `.blue[...]`
+  
+- Background  
+  `.bg-blue[...]`
+]
+]
+
+---
+
+# Big Topic or Inverse Slides `#`
+
+## Slide Headings `##`
+
+### Sub-slide Headings `###`
+
+#### Bold Call-Out `####`
+
+This is a normal paragraph text. Only use header levels 1-4.
+
+##### Possible, but not recommended `#####`
+
+###### Definitely don't use h6 `######`
+
+---
+class: inverse center middle
+
+# Topic Changing Interstitial
+
+--
+
+```
+class: inverse center middle
+```
+
+---
+layout: true
+
+## Slide Classes
+
+---
+class: no-logo
+
+This slide doesn't have a logo.
+
+```
+---
+class: no-logo
+
+This slide doesn't have a logo.
+```
+
+---
+class: no-border
+
+This slide doesn't have a bottom border.
+
+```
+---
+class: no-border
+
+This slide doesn't have a bottom border.
+```
+
+---
+class: hide-count
+
+This slide doesn't have a slide count.
+
+```
+---
+class: hide-count
+
+This slide doesn't doesn't have a slide count.
+```
+
+---
+layout: true
+
+## Blocks
+
+---
+
+### Blockquote
+
+> This is a blockquote following a header.
+>
+> When something is important enough, you do it even if the odds are not in your favor.
+
+---
+
+### Code Blocks
+
+#### R Code
+
+```{r eval=FALSE}
+ggplot(gapminder) +
+  aes(x = gdpPercap, y = lifeExp, size = pop, color = country) +
+  geom_point() +
+  facet_wrap(~year)
+```
+
+#### JavaScript
+
+```js
+var fun = function lang(l) {
+  dateformat.i18n = require('./lang/' + l)
+  return true;
+}
+```
+
+---
+
+### More R Code
+
+```{r}
+library(dplyr)
+dplyr::starwars %>% dplyr::slice_sample(n = 4)
+```
+
+---
+
+```{r message=TRUE}
+cli::cli_alert_success("It worked!")
+```
+
+--
+
+```{r message=TRUE}
+message("Just a friendly message")
+```
+
+--
+
+```{r warning=TRUE}
+warning("This could be bad...")
+```
+
+--
+
+```{r error=TRUE}
+stop("I hope you're sitting down for this")
+```
+
+
+---
+layout: true
+
+## Tables
+
+---
+
+```{r}
+tibble::as_tibble(mtcars)
+```
+
+---
+
+```{r}
+knitr::kable(head(mtcars), format = 'html')
+```
+
+---
+
+```{r}
+DT::datatable(head(mtcars), fillContainer = FALSE, options = list(pageLength = 4))
+```
+
+
+---
+
+A demo table using [gt](https://gt.rstudio.com/), prepared here and shown in the next two slides.
+
+```{r}
+library(gt) #<<
+library(tidyr)
+
+gt_table <- mtcars %>%
+  tibble::rownames_to_column("car") %>%
+  separate(car, c("make", "model"), sep = " ", extra = "merge") %>% 
+  group_by(make) %>%
+  filter(n() > 1) %>%
+  slice(1:2) %>%
+  gt() %>%  #<<
+  tab_header(title = "Data About Cars")
+```
+
+---
+
+.flex[
+.w-20.mr3[
+```{r gt_table1, eval=FALSE}
+gt_table
+```
+]
+.w-80[
+```{r ref.label="gt_table1", echo=FALSE}
+```
+]
+]
+
+
+---
+
+.flex[
+.w-40.mr3[
+```{r gt_table2, eval=FALSE}
+as_raw_html(gt_table)
+```
+]
+.w-60[
+```{r ref.label="gt_table2", echo=FALSE}
+```
+]
+]
+
+---
+layout: true
+
+## Lists
+
+---
+
+.pull-left[
+#### Here is an unordered list:
+
+*   Item foo
+*   Item bar
+*   Item baz
+*   Item zip
+]
+
+.pull-right[
+
+#### And an ordered list:
+
+1.  Item one
+1.  Item two
+1.  Item three
+1.  Item four
+]
+
+---
+
+### And a nested list:
+
+- level 1 item
+  - level 2 item
+  - level 2 item
+    - level 3 item
+    - level 3 item
+- level 1 item
+  - level 2 item
+  - level 2 item
+  - level 2 item
+- level 1 item
+  - level 2 item
+  - level 2 item
+- level 1 item
+
+---
+
+### Nesting an ol in ul in an ol
+
+- level 1 item (ul)
+  1. level 2 item (ol)
+  1. level 2 item (ol)
+    - level 3 item (ul)
+    - level 3 item (ul)
+- level 1 item (ul)
+  1. level 2 item (ol)
+  1. level 2 item (ol)
+    - level 3 item (ul)
+    - level 3 item (ul)
+  1. level 4 item (ol)
+  1. level 4 item (ol)
+    - level 3 item (ul)
+    - level 3 item (ul)
+- level 1 item (ul)
+
+---
+layout: false
+
+## Plots
+
+```{r plot-example}
+library(ggplot2)
+ggplot(mpg) + aes(hwy, cty, color = class) + geom_point()
+```
+
+---
+
+## Custom plot theme
+
+If [moffittdocs](https://github.com/Moffitt-Health-Informatics/moffittdocs) is available...
+
+```{r}
+plot_theme <- if (requireNamespace("moffittdocs", quietly = TRUE)) {
+  moffittdocs::theme_moffitt() + theme(plot.margin = margin())
+} else {
+  theme_minimal()
+}
+```
+
+---
+
+## Custom plot theme
+
+```{r plot-example-themed}
+g <- ggplot(mpg) + aes(hwy, cty, color = class) + geom_point()
+g + plot_theme
+```
+
+---
+
+## Square image
+
+.w-50.center[
+![](https://octodex.github.com/images/labtocat.png)
+]
+
+.footnote[Uses `.w-50[...]`]
+
+---
+
+### Wide image
+
+![](https://guides.github.com/activities/hello-world/branching.png)
+
+.footnote[Wide images scale to 100% slide width]
+
+---
+
+## Two images
+
+.pull-left[
+![](https://octodex.github.com/images/motherhubbertocat.png)
+]
+
+.pull-right[
+![](https://octodex.github.com/images/dinotocat.png)
+]
+
+---
+
+### Definition lists can be used with HTML syntax.
+
+<dl>
+<dt>Name</dt>
+<dd>Godzilla</dd>
+<dt>Born</dt>
+<dd>1952</dd>
+<dt>Birthplace</dt>
+<dd>Japan</dd>
+<dt>Color</dt>
+<dd>Green</dd>
+</dl>
+
+---
+class: inverse center middle
+
+# Slide Extras
+
+---
+
+## Includes xaringanExtra
+
+Uncomment the extensions in the `xaringan-extras` chunk to enable.
+
+```{r eval=FALSE}
+xaringanExtra::use_xaringan_extra(c(
+  "tile_view"
+  # "editable",
+  # "animate",
+  # "panelset"
+))
+```
+
+Press <kbd>O</kbd> to open Tile .b[O]verview.
+
+[gadenbuie/xaringanExtra](https://github.com/gadenbuie/xaringanExtra)

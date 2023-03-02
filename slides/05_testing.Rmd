@@ -1,0 +1,576 @@
+---
+title: "Statistical tests"
+subtitle: "Tests of mean"
+author: 
+  - Ram Thapa
+institute: "Moffitt Cancer Center"
+date: "June 29, 2022"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    chakra: libs/remark-0.14.0.min.js
+    css: 
+      - css/moffitt-xaringan.css
+      - css/moffitt-xaringan-extra.css
+      - css/tachyons.moffitt.css
+    seal: false
+    nature:
+      titleSlideClass: ["bottom", "left"]
+      slideNumberFormat: "%current%"
+      highlightStyle: atom-one-light
+      highlightLines: true
+      ratio: 16:9
+      countIncrementalSlides: true
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+knitr::opts_chunk$set(
+  fig.width=9, fig.height=3.5, fig.retina=3,
+  out.width = "100%",
+  cache = FALSE,
+  echo = TRUE,
+  message = FALSE, 
+  warning = FALSE, 
+  hiline = TRUE
+)
+options(width = 70)
+```
+
+name: title
+class: left center hide-count
+
+<!-- Slide Extras -->
+
+```{r xaringan-extras, echo=FALSE, results="asis"}
+# remotes::install_github("gadenbuie/xaringanExtra")
+xaringanExtra::use_xaringan_extra(c(
+  "tile_view"
+  # "editable",
+  # "animate",
+  # "panelset"
+))
+```
+
+<!-- Title Slide -->
+<!-- <div class="talk-logo"></div> -->
+
+.talk-meta[
+.talk-title[
+# `r rmarkdown::metadata$title`
+
+`r rmarkdown::metadata$subtitle`
+]
+
+.talk-author[
+`r paste(rmarkdown::metadata$author, collapse = " &middot; ")`<br>
+.moffitt-gray[`r paste(rmarkdown::metadata$institute, collapse = ", ")`]
+]
+
+.talk-date.moffitt-gray[
+`r knitr::knit(text = rmarkdown::metadata$date)`
+]
+]
+
+
+```{css echo=FALSE}
+/* Define title slide image or logo here */
+  .talk-logo {
+    width: 400px;
+    height: 750px;
+    position: absolute;
+    top: 6%;
+    right: 7%;
+    /* background-image: url('img/r4ds-cover.png'); */
+      background-size: contain;
+    background-repeat: no-repeat;
+    background-position: contain;
+  }
+```
+
+<!-- Moffitt Logo and Slide Border ----
+
+All slides except "title" and "inverse" slides
+have the Moffitt Color Bar and logo.
+
+Additional classes are provided to disable both:
+
+- `class: no-logo` hides the logo
+- `class: no-border` hides the border
+
+or to force either to be shown
+
+- `class: moffitt-slide-logo` shows the logo
+- `class: moffitt-slide-border` shows the border
+-->
+
+---
+# Tests of mean in R
+
+- t-test
+
+- ANOVA 
+
+
+Briefly talk about non-parametric alternatives (when data are not normally distributed) as well
+
+
+- Mann Whitney U test (Wilcoxon Rank Sum test) 
+
+- Kruskal-Wallis test
+
+
+---
+
+## t-test
+ 
+Unpaired two-samples t-test is used to compare the mean of two independent groups
+ 
+ 
+**t-test assumptions**
+
+- The data are continuous (not discrete) and follow the normal probability distribution
+
+- The variances of the two populations are equal (if not, the Welch's t-test is used)
+
+- The two samples are independent. There is no relationship between the individuals in one sample as compared to the other (as there is in the paired t-test)
+
+- Both samples are simple random samples from their respective populations. Each individual in the population has an equal probability of being selected in the sample
+ 
+---
+## t-test formula
+
+- classical t-test (equal variances):
+
+$$t = \frac{\overline{x}_{1} - \overline{x}_{2}}{S_{p}\sqrt{\frac{1}{N_{1}} + \frac{1}{N_{2}}}}$$
+where:
+$S_{p}$ = $\sqrt{\frac{(N_{1}-1)s^{2}_{1} + (N_{1}-1)s^{2}_{1}}{N_{1}+N_{2}-2}}$ 
+
+degrees of freedom $df=N_{1}+N_{2}-2$
+
+---
+class: middle
+
+- Welch t-statistic (unequal variances):
+
+$$t = \frac{\overline{x}_{1} - \overline{x}_{2}}{\sqrt{\frac{S^{2}_{1}}{N_{1}} + \frac{S^{2}_{2}}{N_{2}}}}$$
+where: $S_{1}$ and $S_{2}$ are the standard deviation of  two groups
+
+degrees of freedom 
+$$df = \frac{\left(\frac{S^{2}_{1}}{N_{1}} + \frac{S^{2}_{2}}{N_{2}}\right)^2}{\frac{1}{N_1-1}\left(\frac{S^{2}_{1}}{N_{1}}\right)^2 + \frac{1}{N_2-1}\left(\frac{S^{2}_{2}}{N_{2}}\right)^2}$$
+---
+## TCGA data
+
+```{r data, echo = TRUE}
+library(tidyverse)
+library(broom)
+
+# set theme to theme_bw()
+theme_set(theme_bw(base_size = 15))
+
+# import data 
+clinical <- read_csv(here::here("data", "tcga_clinical.txt"))
+tcga_gene_exp <- read_csv(here::here("data", "tcga_gene_exp.txt"))
+
+# Merge clnical and expression data
+clinical_exprs <- left_join(
+  clinical, tcga_gene_exp, by = "bcr_patient_barcode") %>% 
+  mutate(stage = str_remove(stage, "A$|B$|C$"))
+```
+
+---
+## Visualize boxplots
+
+```{r xaringan-panelset, echo=FALSE}
+xaringanExtra::use_panelset()
+```
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r t2boxplots, echo = TRUE, fig.show = "hide"}
+ggplot(clinical_exprs , aes(gender, PTEN_exp, fill = gender))  +
+  geom_boxplot() +
+  stat_summary(
+    fun = "mean", geom = "point", color = "blue", size = 3) +
+  scale_fill_brewer(palette = "Accent") +
+  labs(title = "PTEN expression" , x = "Gender", y = "expression") +
+  theme(legend.position = "none")  
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "t2boxplots", echo = FALSE}
+```
+]
+]
+---
+ 
+## Visualize histograms
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r t2hist, echo = TRUE, fig.show = "hide"}
+ggplot(clinical_exprs, aes(x = PTEN_exp, fill = gender)) +
+  scale_fill_brewer(palette = "Accent") + 
+  geom_histogram(alpha = 0.5, position = "identity") 
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "t2hist", echo = FALSE}
+```
+]
+]
+
+---
+## t-test R call
+
+````{verbatim}
+t.test(x, ...)
+
+## Default S3 method:
+t.test(x, y = NULL,
+       alternative = c("two.sided", "less", "greater"),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95, ...)
+
+## S3 method for class 'formula'
+t.test(formula, data, subset, na.action, ...)
+````
+
+If the dependent and independent variables are in a dataframe, you can use the formula notation in the form `y ~ x`, and specify the dataset containing the data in `data`
+
+---
+class: middle
+
+```{r comment=NA}
+
+res <- t.test(
+  PTEN_exp ~ gender, data = clinical_exprs, alternative = c("two.sided"))
+
+res
+```
+
+---
+class: middle
+
+**Access the values returned by `t.test()` function**
+
+The result of `t.test()` is a list of components such as estimate, parameter, p-value etc. 
+
+`tidy()` function from {`broom`} package can turn this object into a nice `tidy` tibble
+
+
+
+```{r }
+tidy_res <- t.test(
+  PTEN_exp ~ gender, data = clinical_exprs,
+  alternative = c("two.sided")) %>% 
+  tidy()
+
+tidy_res
+```
+
+---
+
+
+## Mann Whitney U test (Wilcoxon Rank Sum test) 
+
+ 
+A popular non-parametric test to compare outcomes between two independent groups 
+
+The Mann Whitney U test, sometimes called the Mann Whitney Wilcoxon test or the Wilcoxon Rank Sum test, is used to test whether two samples are likely to derive from the same population (i.e., that the two populations have the same shape)
+
+It can also be used on related samples or matched samples to assess whether their population mean ranks differ (i.e. it is a paired difference test)
+
+It can be used as an alternative to the paired Student's t-test when the distribution of the difference between two samples' means cannot be assumed to be normally distributed
+
+---
+## Visualize histograms by gender
+  
+.panelset[
+
+.panel[.panel-name[R Code]
+
+```{r wilcoxonhists, echo = TRUE, fig.show = "hide"}
+ggplot(clinical_exprs, aes(x = BUB1_exp )) +
+  geom_histogram(color = "gray70") +
+  facet_wrap(vars(gender))
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "wilcoxonhists", echo = FALSE}
+```
+]
+]
+
+---
+ 
+## Visualize boxplots by gender
+  
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```{r wilcoxonboxplots, echo = TRUE, fig.show = "hide"}
+  
+ggplot(clinical_exprs , aes(gender, BUB1_exp, fill = gender))  +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(title = "BUB1 expression" , x = "Gender", y = "Expression") +
+  theme(legend.position = "none")  
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "wilcoxonboxplots", echo = FALSE}
+```
+]
+]
+
+---
+## Wilcoxon test R call
+
+````{verbatim}
+wilcox.test(x, ...)
+
+## Default S3 method:
+wilcox.test(x, y = NULL,
+            alternative = c("two.sided", "less", "greater"),
+            mu = 0, paired = FALSE, exact = NULL, correct = TRUE,
+            conf.int = FALSE, conf.level = 0.95,
+            tol.root = 1e-4, digits.rank = Inf, ...)
+
+## S3 method for class 'formula'
+wilcox.test(formula, data, subset, na.action, ...)
+````
+
+---
+## Wilcoxon test by gender
+
+```{r comment=NA}
+wilcox_gender <- wilcox.test(
+  BUB1_exp ~ gender, data = clinical_exprs, alternative = c("two.sided"))
+ 
+wilcox_gender 
+```
+
+The p-value is very low so we reject the null hypothesis of no difference (0 location shift) 
+
+---
+
+# ANOVA
+
+The one-way analysis of variance (ANOVA) is an extension of independent two-samples t-test for comparing means in a situation where there are more than two groups
+
+Assumptions
+- The observations are independent and randomly selected from the population
+
+- The data are normally distributed
+
+- These populations have a common variance
+
+---
+## Visualize boxplots by stage
+  
+.panelset[
+
+.panel[.panel-name[R Code]
+
+```{r anova-hist, echo = TRUE, fig.show = "hide"}
+ggplot(clinical_exprs , aes(stage, BUB1_exp, fill = stage))  +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(title = "BUB1 expression" , x = "Stage", y = "Expression") +
+  stat_summary(
+    fun = "mean", geom = "point", color = "blue", size = 3) +
+  theme(legend.position = "none") 
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "anova-hist", echo = FALSE}
+```
+]
+]
+
+---
+
+## ANOVA using `aov()`
+
+
+````{verbatim}
+aov(formula, data = NULL, projections = FALSE, qr = TRUE,
+    contrasts = NULL, ...)
+````
+
+
+```{r anova-stage}
+fit_stage <- aov(
+  BUB1_exp ~ stage, data = clinical_exprs)
+
+summary(fit_stage)
+```
+ 
+ 
+You can use `tidy()` function on `aov` object to get result as tibble
+
+---
+
+## Multiple pairwise-comparison between the means of groups
+
+When the ANOVA test is significant, we can compute Tukey HSD (Tukey Honest Significant Differences) for performing post-hoc comparisons or multiple pairwise-comparison between the means of groups
+
+Function `TukeyHD()` takes the fitted ANOVA as an argument
+
+
+---
+
+```{r anova-stage-post-hoc}
+# Conduct post-hoc tests
+TukeyHSD(fit_stage)
+
+```
+---
+## Type I, Type II, and Type III ANOVAs
+
+These types differ in how variability (`sums of squares`) are calculated
+
+All three types give the same result if data is relatively **balanced** (relatively equal numbers of observations in each group) but if data are **unbalanced** (some groups have many more observations than others) then we need to use Type II or Type III ANOVA
+
+Standard `aov()` function uses Type I sums of squares and `Anova()` function in {`car`} package provides options to conduct ANOVA with Type II or Type III sums of squares
+
+````{verbatim}
+## S3 method for class 'lm'
+Anova(mod, error, type=c("II","III", 2, 3),
+	white.adjust=c(FALSE, TRUE, "hc3", "hc0", "hc1", "hc2", "hc4"),
+	vcov.=NULL, singular.ok, ...)
+
+## S3 method for class 'aov'
+Anova(mod, ...)
+````
+
+---
+
+## Two-way ANOVA: boxplot by gender & stage
+  
+.panelset[
+
+.panel[.panel-name[R Code]
+
+```{r two-anova-hist, echo = TRUE, fig.show = "hide"}
+ggplot(clinical_exprs , aes(gender, BUB1_exp, fill = stage))  +
+  geom_boxplot() +
+  scale_fill_brewer(NULL, palette = "Accent") +
+  labs(title = "BUB1 expression" , y = "Expression") +
+  stat_summary(
+    fun = "mean", geom = "point", color = "blue", size = 3,
+    position = position_dodge2(width = 0.75, preserve = "single"),
+    show.legend = FALSE) +
+  theme(legend.position = "bottom",
+        axis.title.x = element_blank()) 
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "two-anova-hist", echo = FALSE}
+```
+]
+]
+
+---
+
+## Two-way ANOVA 
+
+```{r two-anova-stage}
+fit_gender_stage <- aov(
+  BUB1_exp ~ gender + stage, data = clinical_exprs)
+
+summary(fit_gender_stage)
+```
+
+---
+## Kruskal-Wallis Rank Sum test
+
+Kruskal-Wallis test is a non-parametric alternative to one-way ANOVA test
+
+````{verbatim}
+kruskal.test(x, ...)
+
+## Default S3 method:
+kruskal.test(x, g, ...)
+
+## S3 method for class 'formula'
+kruskal.test(formula, data, subset, na.action, ...)
+```
+
+It extends the two-samples Wilcoxon test where there are more than two groups to compare
+
+---
+## Visualize boxplots by smoking status
+  
+.panelset[
+
+.panel[.panel-name[R Code]
+
+```{r kw-boxplot, echo = TRUE, fig.show = "hide"}
+clinical_exprs %>% 
+  drop_na(smoking) %>% 
+  ggplot(aes(smoking, HDAC1_exp, fill = smoking))  +
+  geom_boxplot() +
+  scale_fill_brewer(NULL, palette = "Accent") +
+  labs(title = "HDAC1 expression" , x = "Smoking status", y = "Expression") +
+  theme(legend.position = "none") 
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "kw-boxplot", echo = FALSE}
+```
+]
+]
+---
+
+```{r}
+fit_smoking <- kruskal.test(HDAC1_exp ~ smoking, data = clinical_exprs)
+
+fit_smoking
+```
+
+
+Output in tibble using `tidy()` function
+
+```{r}
+tidy(fit_smoking)
+```
+
+---
+
+## Multiple pairwise-comparison
+
+Use `pairwise.wilcox.test()` to calculate pairwise comparisons between group levels with corrections for multiple testing
+
+```{r}
+pairwise.wilcox.test(
+  clinical_exprs$HDAC1_exp, clinical_exprs$smoking, 
+  p.adjust.method = "BH") %>% 
+  tidy()
+```
+
+Benjamini & Hochberg (also known as FDR) method is used for multiple correction
+
+---
+## Useful resource
+
+[rstatix](https://rpkgs.datanovia.com/rstatix/index.html) R package that provides a simple and intuitive pipe-friendly framework, coherent with the ‘tidyverse’ design philosophy, for performing basic statistical tests, including t-test, Wilcoxon test, ANOVA, Kruskal-Wallis and correlation analyses. 

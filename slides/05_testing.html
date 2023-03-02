@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Statistical tests</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Ram Thapa" />
+    <meta name="date" content="2022-06-29" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <link rel="stylesheet" href="css/moffitt-xaringan.css" type="text/css" />
+    <link rel="stylesheet" href="css/moffitt-xaringan-extra.css" type="text/css" />
+    <link rel="stylesheet" href="css/tachyons.moffitt.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+name: title
+class: left center hide-count
+
+&lt;!-- Slide Extras --&gt;
+
+
+
+&lt;!-- Title Slide --&gt;
+&lt;!-- &lt;div class="talk-logo"&gt;&lt;/div&gt; --&gt;
+
+.talk-meta[
+.talk-title[
+# Statistical tests
+
+Tests of mean
+]
+
+.talk-author[
+Ram Thapa&lt;br&gt;
+.moffitt-gray[Moffitt Cancer Center]
+]
+
+.talk-date.moffitt-gray[
+June 29, 2022
+]
+]
+
+
+&lt;style type="text/css"&gt;
+/* Define title slide image or logo here */
+  .talk-logo {
+    width: 400px;
+    height: 750px;
+    position: absolute;
+    top: 6%;
+    right: 7%;
+    /* background-image: url('img/r4ds-cover.png'); */
+      background-size: contain;
+    background-repeat: no-repeat;
+    background-position: contain;
+  }
+&lt;/style&gt;
+
+&lt;!-- Moffitt Logo and Slide Border ----
+
+All slides except "title" and "inverse" slides
+have the Moffitt Color Bar and logo.
+
+Additional classes are provided to disable both:
+
+- `class: no-logo` hides the logo
+- `class: no-border` hides the border
+
+or to force either to be shown
+
+- `class: moffitt-slide-logo` shows the logo
+- `class: moffitt-slide-border` shows the border
+--&gt;
+
+---
+# Tests of mean in R
+
+- t-test
+
+- ANOVA 
+
+
+Briefly talk about non-parametric alternatives (when data are not normally distributed) as well
+
+
+- Mann Whitney U test (Wilcoxon Rank Sum test) 
+
+- Kruskal-Wallis test
+
+
+---
+
+## t-test
+ 
+Unpaired two-samples t-test is used to compare the mean of two independent groups
+ 
+ 
+**t-test assumptions**
+
+- The data are continuous (not discrete) and follow the normal probability distribution
+
+- The variances of the two populations are equal (if not, the Welch's t-test is used)
+
+- The two samples are independent. There is no relationship between the individuals in one sample as compared to the other (as there is in the paired t-test)
+
+- Both samples are simple random samples from their respective populations. Each individual in the population has an equal probability of being selected in the sample
+ 
+---
+## t-test formula
+
+- classical t-test (equal variances):
+
+`$$t = \frac{\overline{x}_{1} - \overline{x}_{2}}{S_{p}\sqrt{\frac{1}{N_{1}} + \frac{1}{N_{2}}}}$$`
+where:
+`\(S_{p}\)` = `\(\sqrt{\frac{(N_{1}-1)s^{2}_{1} + (N_{1}-1)s^{2}_{1}}{N_{1}+N_{2}-2}}\)` 
+
+degrees of freedom `\(df=N_{1}+N_{2}-2\)`
+
+---
+class: middle
+
+- Welch t-statistic (unequal variances):
+
+`$$t = \frac{\overline{x}_{1} - \overline{x}_{2}}{\sqrt{\frac{S^{2}_{1}}{N_{1}} + \frac{S^{2}_{2}}{N_{2}}}}$$`
+where: `\(S_{1}\)` and `\(S_{2}\)` are the standard deviation of  two groups
+
+degrees of freedom 
+`$$df = \frac{\left(\frac{S^{2}_{1}}{N_{1}} + \frac{S^{2}_{2}}{N_{2}}\right)^2}{\frac{1}{N_1-1}\left(\frac{S^{2}_{1}}{N_{1}}\right)^2 + \frac{1}{N_2-1}\left(\frac{S^{2}_{2}}{N_{2}}\right)^2}$$`
+---
+## TCGA data
+
+
+```r
+library(tidyverse)
+library(broom)
+
+# set theme to theme_bw()
+theme_set(theme_bw(base_size = 15))
+
+# import data 
+clinical &lt;- read_csv(here::here("data", "tcga_clinical.txt"))
+tcga_gene_exp &lt;- read_csv(here::here("data", "tcga_gene_exp.txt"))
+
+# Merge clnical and expression data
+clinical_exprs &lt;- left_join(
+  clinical, tcga_gene_exp, by = "bcr_patient_barcode") %&gt;% 
+  mutate(stage = str_remove(stage, "A$|B$|C$"))
+```
+
+---
+## Visualize boxplots
+
+
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(clinical_exprs , aes(gender, PTEN_exp, fill = gender))  +
+  geom_boxplot() +
+  stat_summary(
+    fun = "mean", geom = "point", color = "blue", size = 3) +
+  scale_fill_brewer(palette = "Accent") +
+  labs(title = "PTEN expression" , x = "Gender", y = "expression") +
+  theme(legend.position = "none")  
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="05_testing_files/figure-html/unnamed-chunk-2-1.png" width="100%" /&gt;
+]
+]
+---
+ 
+## Visualize histograms
+  
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(clinical_exprs, aes(x = PTEN_exp, fill = gender)) +
+  scale_fill_brewer(palette = "Accent") + 
+  geom_histogram(alpha = 0.5, position = "identity") 
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="05_testing_files/figure-html/unnamed-chunk-3-1.png" width="100%" /&gt;
+]
+]
+
+---
+## t-test R call
+
+
+```default
+t.test(x, ...)
+
+## Default S3 method:
+t.test(x, y = NULL,
+       alternative = c("two.sided", "less", "greater"),
+       mu = 0, paired = FALSE, var.equal = FALSE,
+       conf.level = 0.95, ...)
+
+## S3 method for class 'formula'
+t.test(formula, data, subset, na.action, ...)
+```
+
+If the dependent and independent variables are in a dataframe, you can use the formula notation in the form `y ~ x`, and specify the dataset containing the data in `data`
+
+---
+class: middle
+
+
+```r
+res &lt;- t.test(
+  PTEN_exp ~ gender, data = clinical_exprs, alternative = c("two.sided"))
+
+res
+```
+
+```
+
+	Welch Two Sample t-test
+
+data:  PTEN_exp by gender
+t = 2.4726, df = 718.98, p-value = 0.01364
+alternative hypothesis: true difference in means between group FEMALE and group MALE is not equal to 0
+95 percent confidence interval:
+  23.71973 206.58663
+sample estimates:
+mean in group FEMALE   mean in group MALE 
+            2092.414             1977.261 
+```
+
+---
+class: middle
+
+**Access the values returned by `t.test()` function**
+
+The result of `t.test()` is a list of components such as estimate, parameter, p-value etc. 
+
+`tidy()` function from {`broom`} package can turn this object into a nice `tidy` tibble
+
+
+
+
+```r
+tidy_res &lt;- t.test(
+  PTEN_exp ~ gender, data = clinical_exprs,
+  alternative = c("two.sided")) %&gt;% 
+  tidy()
+
+tidy_res
+```
+
+```
+## # A tibble: 1 x 10
+##   estimate estimate1 estimate2 statistic p.value parameter conf.low
+##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1     115.     2092.     1977.      2.47  0.0136      719.     23.7
+## # ... with 3 more variables: conf.high &lt;dbl&gt;, method &lt;chr&gt;,
+## #   alternative &lt;chr&gt;
+```
+
+---
+
+
+## Mann Whitney U test (Wilcoxon Rank Sum test) 
+
+ 
+A popular non-parametric test to compare outcomes between two independent groups 
+
+The Mann Whitney U test, sometimes called the Mann Whitney Wilcoxon test or the Wilcoxon Rank Sum test, is used to test whether two samples are likely to derive from the same population (i.e., that the two populations have the same shape)
+
+It can also be used on related samples or matched samples to assess whether their population mean ranks differ (i.e. it is a paired difference test)
+
+It can be used as an alternative to the paired Student's t-test when the distribution of the difference between two samples' means cannot be assumed to be normally distributed
+
+---
+## Visualize histograms by gender
+  
+.panelset[
+
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(clinical_exprs, aes(x = BUB1_exp )) +
+  geom_histogram(color = "gray70") +
+  facet_wrap(vars(gender))
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="05_testing_files/figure-html/unnamed-chunk-7-1.png" width="100%" /&gt;
+]
+]
+
+---
+ 
+## Visualize boxplots by gender
+  
+.panelset[
+.panel[.panel-name[R Code]
+
+
+
+```r
+ggplot(clinical_exprs , aes(gender, BUB1_exp, fill = gender))  +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(title = "BUB1 expression" , x = "Gender", y = "Expression") +
+  theme(legend.position = "none")  
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="05_testing_files/figure-html/unnamed-chunk-8-1.png" width="100%" /&gt;
+]
+]
+
+---
+## Wilcoxon test R call
+
+
+```default
+wilcox.test(x, ...)
+
+## Default S3 method:
+wilcox.test(x, y = NULL,
+            alternative = c("two.sided", "less", "greater"),
+            mu = 0, paired = FALSE, exact = NULL, correct = TRUE,
+            conf.int = FALSE, conf.level = 0.95,
+            tol.root = 1e-4, digits.rank = Inf, ...)
+
+## S3 method for class 'formula'
+wilcox.test(formula, data, subset, na.action, ...)
+```
+
+---
+## Wilcoxon test by gender
+
+
+```r
+wilcox_gender &lt;- wilcox.test(
+  BUB1_exp ~ gender, data = clinical_exprs, alternative = c("two.sided"))
+ 
+wilcox_gender 
+```
+
+```
+
+	Wilcoxon rank sum test with continuity correction
+
+data:  BUB1_exp by gender
+W = 93990, p-value = 0.0000007221
+alternative hypothesis: true location shift is not equal to 0
+```
+
+The p-value is very low so we reject the null hypothesis of no difference (0 location shift) 
+
+---
+
+# ANOVA
+
+The one-way analysis of variance (ANOVA) is an extension of independent two-samples t-test for comparing means in a situation where there are more than two groups
+
+Assumptions
+- The observations are independent and randomly selected from the population
+
+- The data are normally distributed
+
+- These populations have a common variance
+
+---
+## Visualize boxplots by stage
+  
+.panelset[
+
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(clinical_exprs , aes(stage, BUB1_exp, fill = stage))  +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Accent") +
+  labs(title = "BUB1 expression" , x = "Stage", y = "Expression") +
+  stat_summary(
+    fun = "mean", geom = "point", color = "blue", size = 3) +
+  theme(legend.position = "none") 
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="05_testing_files/figure-html/unnamed-chunk-11-1.png" width="100%" /&gt;
+]
+]
+
+---
+
+## ANOVA using `aov()`
+
+
+
+```default
+aov(formula, data = NULL, projections = FALSE, qr = TRUE,
+    contrasts = NULL, ...)
+```
+
+
+
+```r
+fit_stage &lt;- aov(
+  BUB1_exp ~ stage, data = clinical_exprs)
+
+summary(fit_stage)
+```
+
+```
+##               Df    Sum Sq  Mean Sq F value              Pr(&gt;F)    
+## stage          3  41684114 13894705   117.9 &lt;0.0000000000000002 ***
+## Residuals   1039 122446593   117850                                
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+ 
+ 
+You can use `tidy()` function on `aov` object to get result as tibble
+
+---
+
+## Multiple pairwise-comparison between the means of groups
+
+When the ANOVA test is significant, we can compute Tukey HSD (Tukey Honest Significant Differences) for performing post-hoc comparisons or multiple pairwise-comparison between the means of groups
+
+Function `TukeyHD()` takes the fitted ANOVA as an argument
+
+
+---
+
+
+```r
+# Conduct post-hoc tests
+TukeyHSD(fit_stage)
+```
+
+```
+##   Tukey multiple comparisons of means
+##     95% family-wise confidence level
+## 
+## Fit: aov(formula = BUB1_exp ~ stage, data = clinical_exprs)
+## 
+## $stage
+##                         diff        lwr       upr     p adj
+## Stage II-Stage I   323.56659  233.29243 413.84075 0.0000000
+## Stage III-Stage I  238.45635  159.08032 317.83237 0.0000000
+## Stage IV-Stage I   493.99195  425.87637 562.10754 0.0000000
+## Stage III-Stage II -85.11024 -180.72215  10.50167 0.1008531
+## Stage IV-Stage II  170.42536   83.93365 256.91707 0.0000028
+## Stage IV-Stage III 255.53561  180.48931 330.58190 0.0000000
+```
+---
+## Type I, Type II, and Type III ANOVAs
+
+These types differ in how variability (`sums of squares`) are calculated
+
+All three types give the same result if data is relatively **balanced** (relatively equal numbers of observations in each group) but if data are **unbalanced** (some groups have many more observations than others) then we need to use Type II or Type III ANOVA
+
+Standard `aov()` function uses Type I sums of squares and `Anova()` function in {`car`} package provides options to conduct ANOVA with Type II or Type III sums of squares
+
+
+```default
+## S3 method for class 'lm'
+Anova(mod, error, type=c("II","III", 2, 3),
+	white.adjust=c(FALSE, TRUE, "hc3", "hc0", "hc1", "hc2", "hc4"),
+	vcov.=NULL, singular.ok, ...)
+
+## S3 method for class 'aov'
+Anova(mod, ...)
+```
+
+---
+
+## Two-way ANOVA: boxplot by gender &amp; stage
+  
+.panelset[
+
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(clinical_exprs , aes(gender, BUB1_exp, fill = stage))  +
+  geom_boxplot() +
+  scale_fill_brewer(NULL, palette = "Accent") +
+  labs(title = "BUB1 expression" , y = "Expression") +
+  stat_summary(
+    fun = "mean", geom = "point", color = "blue", size = 3,
+    position = position_dodge2(width = 0.75, preserve = "single"),
+    show.legend = FALSE) +
+  theme(legend.position = "bottom",
+        axis.title.x = element_blank()) 
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="05_testing_files/figure-html/unnamed-chunk-14-1.png" width="100%" /&gt;
+]
+]
+
+---
+
+## Two-way ANOVA 
+
+
+```r
+fit_gender_stage &lt;- aov(
+  BUB1_exp ~ gender + stage, data = clinical_exprs)
+
+summary(fit_gender_stage)
+```
+
+```
+##               Df    Sum Sq  Mean Sq F value               Pr(&gt;F)    
+## gender         1   3205376  3205376   27.36          0.000000204 ***
+## stage          3  39333361 13111120  111.93 &lt; 0.0000000000000002 ***
+## Residuals   1038 121591970   117141                                 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+## Kruskal-Wallis Rank Sum test
+
+Kruskal-Wallis test is a non-parametric alternative to one-way ANOVA test
+
+
+```default
+kruskal.test(x, ...)
+
+## Default S3 method:
+kruskal.test(x, g, ...)
+
+## S3 method for class 'formula'
+kruskal.test(formula, data, subset, na.action, ...)
+```
+
+It extends the two-samples Wilcoxon test where there are more than two groups to compare
+
+---
+## Visualize boxplots by smoking status
+  
+.panelset[
+
+.panel[.panel-name[R Code]
+
+
+```r
+clinical_exprs %&gt;% 
+  drop_na(smoking) %&gt;% 
+  ggplot(aes(smoking, HDAC1_exp, fill = smoking))  +
+  geom_boxplot() +
+  scale_fill_brewer(NULL, palette = "Accent") +
+  labs(title = "HDAC1 expression" , x = "Smoking status", y = "Expression") +
+  theme(legend.position = "none") 
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="05_testing_files/figure-html/unnamed-chunk-16-1.png" width="100%" /&gt;
+]
+]
+---
+
+
+```r
+fit_smoking &lt;- kruskal.test(HDAC1_exp ~ smoking, data = clinical_exprs)
+
+fit_smoking
+```
+
+```
+## 
+## 	Kruskal-Wallis rank sum test
+## 
+## data:  HDAC1_exp by smoking
+## Kruskal-Wallis chi-squared = 14.007, df = 2, p-value =
+## 0.0009087
+```
+
+
+Output in tibble using `tidy()` function
+
+
+```r
+tidy(fit_smoking)
+```
+
+```
+## # A tibble: 1 x 4
+##   statistic  p.value parameter method                      
+##       &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt; &lt;chr&gt;                       
+## 1      14.0 0.000909         2 Kruskal-Wallis rank sum test
+```
+
+---
+
+## Multiple pairwise-comparison
+
+Use `pairwise.wilcox.test()` to calculate pairwise comparisons between group levels with corrections for multiple testing
+
+
+```r
+pairwise.wilcox.test(
+  clinical_exprs$HDAC1_exp, clinical_exprs$smoking, 
+  p.adjust.method = "BH") %&gt;% 
+  tidy()
+```
+
+```
+## # A tibble: 3 x 3
+##   group1 group2  p.value
+##   &lt;chr&gt;  &lt;chr&gt;     &lt;dbl&gt;
+## 1 Former Current 0.388  
+## 2 Never  Current 0.00134
+## 3 Never  Former  0.00406
+```
+
+Benjamini &amp; Hochberg (also known as FDR) method is used for multiple correction
+
+---
+## Useful resource
+
+[rstatix](https://rpkgs.datanovia.com/rstatix/index.html) R package that provides a simple and intuitive pipe-friendly framework, coherent with the ‘tidyverse’ design philosophy, for performing basic statistical tests, including t-test, Wilcoxon test, ANOVA, Kruskal-Wallis and correlation analyses. 
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="libs/remark-0.14.0.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "%current%",
+"highlightStyle": "atom-one-light",
+"highlightLines": true,
+"ratio": "16:9",
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

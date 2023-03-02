@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Getting started with R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jordan Creed" />
+    <meta name="date" content="2022-06-01" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
+    <script src="libs/tile-view/tile-view.js"></script>
+    <link rel="stylesheet" href="css/moffitt-xaringan.css" type="text/css" />
+    <link rel="stylesheet" href="css/moffitt-xaringan-extra.css" type="text/css" />
+    <link rel="stylesheet" href="css/tachyons.moffitt.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+name: title
+class: left bottom hide-count
+
+&lt;!-- Slide Extras --&gt;
+
+
+
+&lt;!-- Title Slide --&gt;
+&lt;!-- &lt;div class="talk-logo"&gt;&lt;/div&gt; --&gt;
+
+.talk-meta[
+.talk-title[
+# Getting started with R
+
+
+]
+
+.talk-author[
+Jordan Creed&lt;br&gt;
+.moffitt-gray[Moffitt Cancer Center]
+]
+
+.talk-date.moffitt-gray[
+June 01, 2022
+]
+]
+
+
+&lt;style type="text/css"&gt;
+/* Define title slide image or logo here */
+.talk-logo {
+  width: 400px;
+  height: 750px;
+  position: absolute;
+  top: 6%;
+  right: 7%;
+  /* background-image: url('img/r4ds-cover.png'); */
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: contain;
+}
+&lt;/style&gt;
+
+&lt;!-- Moffitt Logo and Slide Border ----
+
+All slides except "title" and "inverse" slides
+have the Moffitt Color Bar and logo.
+
+Additional classes are provided to disable both:
+
+- `class: no-logo` hides the logo
+- `class: no-border` hides the border
+
+or to force either to be shown
+
+- `class: moffitt-slide-logo` shows the logo
+- `class: moffitt-slide-border` shows the border
+--&gt;
+
+---
+
+## What we are going to cover
+
+*   Installing R and RStudio
+*   Basics of programming 
+*   GitHub
+*   Best coding practices (if we have time)
+
+---
+class: inverse center middle
+
+# R &amp; RStudio
+
+---
+
+## Installing R and RStudio
+
+*   Download R from CRAN (https://cran.r-project.org/)
+    *   use the cloud mirror
+    *   need to update with each major release (about once a year)
+
+*   RStudio can be downloaded from the rstudio site (http://www.rstudio.com/download)
+    *   updated regularly
+
+---
+
+### RStudio 
+
+&lt;img src="01_r-basics_files/figure-html/rstudio-empty.png" width="85%" class="center"/&gt;
+
+???
+
+RStudio a GUI for the R language. 
+
+---
+## R Code 
+
+Two major elements:
+
+*   Functions
+*   Objects 
+
+---
+## Data Types 
+
+Data types: 
+
+*   logical - `TRUE` or `FALSE`
+*   numeric or integer - `22.2`
+*   character - `"character example"`
+
+---
+## Data Structures
+    
+Data structures: 
+    
+*   vector - `c(1:4, 5, 6)`
+*   list - `list(c(1:4), 12, "banana")`
+*   matrix 
+*   dataframe/tibble
+    
+`tibble` and `dataframe` - look and perform virtually the same with the biggest difference 
+being that `dataframes` have rows and `tibbles` do not 
+
+---
+
+&lt;img src="01_r-basics_files/figure-html/rstudio_cheatsheet.png" width="65%" class="center"/&gt;
+
+[r cheatsheets](https://www.rstudio.com/resources/cheatsheets/)
+
+---
+### Packges
+
+A `package` is a collection of functions, data, and documentation that extend
+the functionality of R.
+
+`install.packages("foo")`
+
+vs
+
+`library("foo")`
+
+This course focuses on using a set of packages commonly referred to as the 
+`tidyverse`
+
+---
+## R Projects &amp; `here()`
+
+Working directory = where R looks for your files 
+
+Setting absolute paths can be problematic - especially if you are working on a
+project that uses Windows/Mac/Linux
+
+R Projects provide a structure for storing all files, data, scripts and output for 
+a project
+
+To create a new Project: `File` &gt; `New Directory` &gt; `New Project`
+and fill out the information  
+
+---
+
+## GitHub
+
+.pull-left[
+* GitHub is a code hosting platform used for collaborating and code sharing
+* Materials and information for the course can be found on the class GitHub page
+* Class GitHub: [https://github.com/FridleyLab/Intro_to_R_2022](https://github.com/FridleyLab/Intro_to_R_2022)
+]
+
+.pull-right[&lt;img src="01_r-basics_files/figure-html/octocat.png" width="75%" class="center"/&gt;]
+
+---
+
+## GitHub basics
+
+**What is GitHub?**
+
+  - Code hosting platform
+  - Used for version control
+  - GitHub, GitHub Enterprise, GitLab (😐)
+
+**Why do we care?**
+
+  - Distribute R packages
+  - Collaborate on code
+  - Explore other projects 
+  - Project manager
+  - Repos are **CITABLE**
+  
+👩‍💻 Paul Stewart of the Moffitt BioData Club does a Git
+training about once a year which I highly recommend if you are interested in
+learning more about Git [https://github.com/pstew/biodataclub/tree/master/meetings/2018-10_git](https://github.com/pstew/biodataclub/tree/master/meetings/2018-10_git)
+
+---
+
+## R Community and Resources
+
+.pull-left[
+
+* [Stack Overflow](https://stackoverflow.com/questions/tagged/r)
+* [R Community](https://community.rstudio.com/)
+* [R for Data Science](https://r4ds.had.co.nz/)
+    * Anything written by Hadley Wickham, Garret Grolemund,
+    Yihui Xie, Jenny Bryan 
+* [#rstats](https://twitter.com/hashtag/rstats?lang=en)
+
+]
+
+.h-10.pull-right[
+
+![](01_r-basics_files/figure-html/stackoverflow copy.png)
+
+]
+
+---
+class: inverse center middle
+
+# To RStudio!
+
+---
+class: inverse center middle
+
+# Best Practices
+
+---
+
+## Have you tried turning it off and then on again?
+
+-   Start with a new, clean session
+-   Re-start often
+
+---
+
+## Naming things 
+
+.pull-left[
+
+Good names should be:
+
+-   machine readable 
+    - no spaces, strange punctuation, or odd cases
+-   human readable 
+    - name contains details on content
+-   works with default ordering
+    - numbers first 
+    - standard dates (YYYY-MM-DD)
+    - left pad numbers 
+]
+
+.pull-right[
+
+![](01_r-basics_files/figure-html/mmddyyyy.jpeg)
+
+]
+
+---
+
+## Code Style 
+
+  - Line length around 80 characters
+  - Object and data names should be informative
+  - Consistency is key - names, indents, spacing
+  - [https://style.tidyverse.org/](https://style.tidyverse.org/)
+
+---
+
+## Comments
+
+&lt;img src="01_r-basics_files/figure-html/kiss.png" width="65%" class="center"/&gt;
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="libs/remark-0.14.0.min.js"></script>
+<script>var slideshow = remark.create({
+"slideNumberFormat": "%current%",
+"highlightStyle": "atom-one-light",
+"highlightLines": true,
+"ratio": "16:9",
+"countIncrementalSlides": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
