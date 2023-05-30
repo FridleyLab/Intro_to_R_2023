@@ -77,21 +77,21 @@ before you arrive that you can access GitHub.
 
 ## Schedule and Links
 
-- June 01 - [Basics of
+- May 31 - [Basics of
   R/RStudio](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=ef316a92-1a87-4ae8-a788-aea70150dd19)
-- June 08 - [Data import and wrangling part
+- June 07 - [Data import and wrangling part
   I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d525ac17-661c-44f4-9ad3-aeae0153744a)
-- June 15 - [Data wrangling part
+- June 14 - [Data wrangling part
   II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=c9dcb86c-d5fe-4662-bfbf-aeb5014a74bb)
-- June 22 - [Visualizations with `ggplot2` part
+- June 21 - [Visualizations with `ggplot2` part
   I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=59d650c7-fb6d-45b7-9146-aebc014f764c)
-- June 22 - [Visualizations with `ggplot2` part
+- June 28 - [Visualizations with `ggplot2` part
   II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=77afb363-11d7-40c5-beff-aec3014a604f)
-- July 06 - [Statistics part
+- July 05 - [Statistics part
   I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=88550b82-b60b-42e3-bba4-aeca0151967b)
-- July 13 - [Statistics part
+- July 12 - [Statistics part
   II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=3ba6f5c1-a058-4d93-85f8-aed1014d746f)
-- July 20 -
+- July 19 -
   [`rmarkdown`](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=9382f60b-eb19-4eb4-9426-aed8014ac911)
 
 ## Instructors
