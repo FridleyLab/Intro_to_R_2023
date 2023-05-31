@@ -1,9 +1,9 @@
 ---
-title: "Getting started with R"
+title: "Getting staRted"
 author: 
   - Jordan Creed
 institute: "Moffitt Cancer Center"
-date: 'June 01, 2022'
+date: 'May 31, 2023'
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -210,7 +210,7 @@ and fill out the information
 .pull-left[
 * GitHub is a code hosting platform used for collaborating and code sharing
 * Materials and information for the course can be found on the class GitHub page
-* Class GitHub: [https://github.com/FridleyLab/Intro_to_R_2022](https://github.com/FridleyLab/Intro_to_R_2022)
+* Class GitHub: [https://github.com/FridleyLab/Intro_to_R_2023](https://github.com/FridleyLab/Intro_to_R_2023)
 ]
 
 .pull-right[<img src="01_r-basics_files/figure-html/octocat.png" width="75%" class="center"/>]
