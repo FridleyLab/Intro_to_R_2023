@@ -7,11 +7,11 @@
 
 ------------------------------------------------------------------------
 
-:calendar: 2023
+:calendar: May 31 - July 19 2023
 
-:alarm_clock: ??
+:alarm_clock: 3:00 - 4:00 pm
 
-:office: via [Zoom](https://moffitt.zoom.us/j/99031977384)
+:office: via [Zoom](https://moffitt.zoom.us/j/94702569348)
 
 :computer: [Moffitt](https://moffitt.org/)
 
