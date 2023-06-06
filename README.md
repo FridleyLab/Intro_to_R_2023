@@ -78,7 +78,7 @@ before you arrive that you can access GitHub.
 ## Schedule and Links
 
 - May 31 - [Basics of
-  R/RStudio](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=ef316a92-1a87-4ae8-a788-aea70150dd19)
+  R/RStudio](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=2649cee7-8c62-4220-8606-b0130150775c)
 - June 07 - [Data import and wrangling part
   I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d525ac17-661c-44f4-9ad3-aeae0153744a)
 - June 14 - [Data wrangling part
