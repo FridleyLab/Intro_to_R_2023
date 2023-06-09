@@ -4,7 +4,7 @@ subtitle: "ggplot2"
 author: 
   - Ram Thapa
 institute: "Moffitt Cancer Center"
-date: "June 22, 2022"
+date: "June 21, 2023"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -21,6 +21,8 @@ output:
       highlightLines: true
       ratio: 16:9
       countIncrementalSlides: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -162,7 +164,7 @@ library(tidyverse)
 library(flipbookr)
 library(ggdark)
 
-tcga_clinical <- read_csv(here::here("data", "tcga-clinical-viz.csv"))
+tcga_clinical <- read_delim(here::here("data", "tcga_clinical.txt"))
 ```
 
 
@@ -620,11 +622,10 @@ ggplot(
   mapping = aes(x = weight, y = height, color = gender)) +  
   geom_point() +
   scale_x_continuous(
-    "Weight (kg)", limits = c(40, 180), breaks = seq(40, 180, 20)) + 
+    "Weight (kg)", limits = c(40, 120), breaks = seq(40, 120, 20)) + 
   scale_y_continuous(
-    "Height (cm)", limits = c(120, 200), breaks = seq(120, 200, 20)) + 
-  scale_color_discrete(
-    "Sex", na.value = "red")
+    "Height (cm)", limits = c(140, 200), breaks = seq(120, 200, 20)) + 
+  scale_color_discrete("Sex", na.value = "gray40")
 ```
 ]
 
@@ -667,8 +668,8 @@ ggplot(
   data = tcga_clinical,
   mapping = aes(x = weight, y = height)) +  
   geom_point() +
-  # facet_wrap(~ tumor_tissue_site, ncol = 2) 
-  facet_wrap(vars(tumor_tissue_site), ncol = 2)
+  # facet_wrap(~ stage, ncol = 2) 
+  facet_wrap(vars(stage), ncol = 2)
 
 ```
 ]
