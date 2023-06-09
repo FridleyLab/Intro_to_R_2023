@@ -4,7 +4,7 @@
     <title>Data wrangling: Part I</title>
     <meta charset="utf-8" />
     <meta name="author" content="Jordan Creed" />
-    <meta name="date" content="2022-06-08" />
+    <meta name="date" content="2022-06-07" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
     <script src="libs/tile-view/tile-view.js"></script>
@@ -41,7 +41,7 @@ Jordan Creed&lt;br&gt;
 ]
 
 .talk-date.moffitt-gray[
-June 08, 2022
+June 07, 2022
 ]
 ]
 
@@ -107,7 +107,7 @@ Data comes in all shapes and sizes, but not all data organization is made equal!
 
 .blank[blank line]
 
-👉 For more information please see chapter 11 of [R for Data Science](https://r4ds.had.co.nz/data-import.html)
+👉 For more information please see chapter 12 of [R for Data Science](https://r4ds.had.co.nz/tidy-data.html)
 
 ---
 ## Elements of "tidy" data 
@@ -143,7 +143,7 @@ class: inverse center middle
 *   R data files : `load()`
 *   SAS data files: `haven::read_sas()`
 
-👨‍💻 remember to copy code from the import gui to your scripts!
+👩‍💻 remember to copy code from the import gui to your scripts!
 
 ---
 
@@ -276,6 +276,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable
