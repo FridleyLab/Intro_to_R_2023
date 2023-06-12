@@ -7,11 +7,11 @@
 
 ------------------------------------------------------------------------
 
-:calendar: 2023
+:calendar: May 31 - July 19 2023
 
-:alarm_clock: ??
+:alarm_clock: 3:00 - 4:00 pm
 
-:office: via [Zoom](https://moffitt.zoom.us/j/99031977384)
+:office: via [Zoom](https://moffitt.zoom.us/j/94702569348)
 
 :computer: [Moffitt](https://moffitt.org/)
 
@@ -78,9 +78,9 @@ before you arrive that you can access GitHub.
 ## Schedule and Links
 
 - May 31 - [Basics of
-  R/RStudio](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=ef316a92-1a87-4ae8-a788-aea70150dd19)
+  R/RStudio](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=2649cee7-8c62-4220-8606-b0130150775c)
 - June 07 - [Data import and wrangling part
-  I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=d525ac17-661c-44f4-9ad3-aeae0153744a)
+  I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=e8f7c87f-84a4-4366-87ea-b01a0155080b)
 - June 14 - [Data wrangling part
   II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=c9dcb86c-d5fe-4662-bfbf-aeb5014a74bb)
 - June 21 - [Visualizations with `ggplot2` part

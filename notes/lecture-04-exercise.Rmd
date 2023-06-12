@@ -1,0 +1,312 @@
+---
+title: "ggplot2 exercise"
+author: "Ram Thapa"
+date:  "June 22, 2022"
+output: 
+  html_document:
+    df_print: paged
+    code_folding: show
+    toc: true
+    toc_depth: 3
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.height = 4, fig.width = 5, fig.align = "center", warning = FALSE)
+```
+
+**Packages and data**
+
+```{r packages, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(patchwork)
+
+tcga_clinical <- read_delim(here::here("data", "tcga_clinical.txt"))
+
+head(tcga_clinical)
+```
+
+## Visualizing associations among two or more variables
+
+### Scatterplot
+
+Relationship between height vs weight
+
+```{r scatterplot}
+# set theme to theme_bw()
+theme_set(theme_bw(base_size = 15))
+
+wt_ht_scatter <- ggplot(
+  data = tcga_clinical,
+  mapping = aes(x = weight, y = height)) +
+  geom_point()
+
+wt_ht_scatter
+```
+
+Mapping `color` to `gender` variable from the data
+
+```{r scatterplot2, fig.width = 7}
+wt_ht_scatter_gender <- ggplot(
+  data = tcga_clinical,
+  mapping = aes(x = weight, y = height, color = gender)) +
+  geom_point()
+
+wt_ht_scatter_gender
+```
+
+Avoid overplotting using jitter plot
+
+```{r jitter,  fig.width = 7}
+tcga_clinical %>% 
+  ggplot(mapping = aes(x = stage, y = height)) +
+  geom_point() +
+  geom_jitter(aes(color = stage), width = 0.2, size = 2, alpha = 0.7) +
+  labs(x = NULL, y = "Height (cm)") +
+  scale_color_brewer(NULL, palette = "Paired") 
+```
+
+Note: `geom_jitter` is a shortcut for `geom_point(position = "jitter")`
+
+### Line plot
+
+Line plot of mean age by Karnofsky Performance Score for each stage
+
+```{r line, fig.width = 7}
+# mean age
+mean_age_kps <- tcga_clinical %>% 
+  drop_na(stage, karnofsky_performance_score) %>% 
+  group_by(stage, karnofsky_performance_score) %>% 
+  summarise(mean_age = mean(age_at_initial_pathologic_diagnosis, na.rm = TRUE))
+
+# plot
+mean_age_kps_line <- mean_age_kps %>% 
+  ggplot(aes(x = factor(karnofsky_performance_score), y = mean_age, 
+             group = stage, color = stage)) +
+  geom_point(size = 2) +
+  geom_line() +
+  scale_x_discrete("Karnofsky Performance Score") +
+  scale_y_continuous("Mean age at diagnosis") +
+  scale_color_brewer("Stage", palette = "Paired") 
+
+mean_age_kps_line
+```
+
+## Visualizing amounts
+
+We might be interested in visualizing amounts i.e. numerical values for some set of categories
+
+### Bar plot
+
+```{r barplot}
+tcga_clinical %>% 
+  ggplot(aes(x = stage)) +
+  geom_bar(fill = "gray60")
+```
+
+You could also calculate counts in advance and plot it but you need to use `stat = "identity"`
+
+```{r count}
+# Count by stage
+stage_count <- tcga_clinical %>% 
+  count(stage, .drop = TRUE)
+
+# use stat = "identity"
+ggplot(data = stage_count, aes(x = stage, y = n)) +
+  geom_bar(stat = "identity", fill = "gray60") +
+  labs(x = "Stage", y = "Number of patients")
+```
+
+Or, just use `geom_col()`
+
+```{r count2}
+ggplot(data = stage_count, aes(x = stage, y = n)) +
+  geom_col(fill = "gray60") +
+  labs(x = "Stage", y = "Number of patients")
+```
+
+Sometimes x-axis labels identifying each bar take up a lot of horizontal space
+
+```{r}
+ggplot(data = stage_count, aes(y = fct_reorder(stage, n), x = n)) +
+  geom_bar(stat = "identity", fill = "gray60") +
+  labs(x = "Stage", y = NULL) 
+```
+
+Grouped bar plot
+
+```{r grouped_bar, fig.width = 7}
+groupedbar_gender <- tcga_clinical %>% 
+  ggplot(aes(x = stage, fill = gender)) +
+  geom_bar(position = "dodge") +
+  labs(x = NULL, y = "Number of patients") +
+  scale_fill_viridis_d(NULL)
+
+groupedbar_gender
+```
+
+Stacked bar plot
+
+```{r stacked_bar, fig.width = 6}
+stackedbar_gender <- tcga_clinical %>% 
+  ggplot(aes(x = stage, fill = gender)) +
+  geom_bar(position = "stack") +
+  labs(x = NULL, y = "Number of patients") +
+  scale_fill_viridis_d(NULL)
+
+stackedbar_gender
+```
+
+## Visualizing distributions
+
+To understand how a particular variable is distributed in a dataset
+
+### Boxplot
+
+```{r boxplot, fig.width = 8}
+boxplot_gender <- ggplot(
+  data = tcga_clinical, 
+  aes(x = stage, y = weight, fill = gender)) +
+  geom_boxplot() +
+  labs(x = NULL, y = "Weight (kg)") +
+  scale_fill_brewer(palette = "Dark2")
+
+boxplot_gender
+```
+
+### histogram and density plot
+
+Histogram count plot for single distribution
+
+```{r histogram}
+hist_age <- ggplot(tcga_clinical, aes(x = age_at_initial_pathologic_diagnosis)) +
+  geom_histogram(fill = "gray60", color = "gray80") +
+  labs(x = "Age at diagnosis")
+
+hist_age
+```
+
+Density plot for visualizing multiple distributions at the same time
+
+```{r density, fig.width = 7}
+ggplot(
+  tcga_clinical, 
+  aes(x = height, fill = gender)) +
+  geom_density(alpha = 0.8, color = "transparent") +
+  labs(x = "Height (cm)") +
+  scale_fill_viridis_d(NULL) 
+```
+
+### Violin plot
+
+Violin plot is the combination of the box plot with a kernel density plot.
+
+```{r violin-plot}
+wt_violin <- ggplot(
+  tcga_clinical, aes(x = gender, y = weight)) +
+  geom_violin(trim = FALSE) 
+
+wt_violin
+```
+
+Quantiles can be added the plot by passing a vector to the `draw_quantiles` argument
+
+```{r}
+# violin plot with quantile lines
+ggplot(
+  tcga_clinical, aes(x = gender, y = weight)) +
+  geom_violin(trim = FALSE, draw_quantiles = c(0.25, 0.5, 0.75)) 
+```
+
+We can also overlay box plot to the violin plot
+
+```{r}
+wt_violin2 <- ggplot(
+  tcga_clinical, aes(x = gender, y = weight, fill = gender)) +
+  geom_violin(trim = FALSE) +
+  geom_boxplot(width = 0.1, show.legend = FALSE)
+
+wt_violin2
+```
+
+## Heatmaps
+
+```{r heatmap}
+wt_heatmap <- ggplot(tcga_clinical, aes(x = stage, y = tumor_tissue_site, fill = weight)) +
+  geom_tile(
+    color = "white", lwd = 1, linetype = 1) +
+  scale_fill_gradient(
+    low = "white", high = "blue", na.value = "red") +
+  coord_fixed() + 
+  theme_minimal(base_size = 15) +
+  theme(panel.grid = element_blank())
+
+wt_heatmap
+```
+
+## Combining plots
+
+`{patchwork}` R package has made combining multiple plots ridiculously simple
+
+### Horizontal layout
+
+```{r, fig.width = 8}
+# combine two plots horizontally
+wt_ht_scatter + mean_age_kps_line
+```
+
+or you can use "|" too
+
+### Vertical layout
+
+```{r, message = FALSE, fig.height = 6}
+# stack two plots
+wt_violin2 / hist_age
+```
+
+### Nested layout
+
+```{r, message = FALSE, fig.height = 6, fig.width = 8}
+nested_patch <- mean_age_kps_line / (wt_ht_scatter | hist_age)
+
+nested_patch
+```
+
+Be careful with the operator precedence rule (e.g. / is evaluated before \|)
+
+`{patchwork}` provides `wrap_plots()` for a more functional approach to assembly
+
+### Annotating plots
+
+```{r, message = FALSE, fig.height = 6, fig.width = 8}
+(boxplot_gender / (wt_ht_scatter | hist_age)) +
+  plot_annotation(
+    title = "Combining three plots",
+    subtitle = "Annotating each plot",
+    caption = "Data source: TCGA data",
+    tag_levels = "A", tag_suffix = ".")
+```
+
+### Modifying patches
+
+Use `&` to add elements to all subplots in the patchwork
+
+```{r, message = FALSE, fig.height = 6, fig.width = 8}
+mean_age_kps_line / (wt_ht_scatter | hist_age) & theme_gray()
+```
+
+and `*` to add the element to all the subplots in the current nesting level
+
+```{r, message = FALSE, fig.height = 6, fig.width = 8}
+(mean_age_kps_line / (wt_ht_scatter | hist_age)) * theme_gray()
+```
+
+### Controlling guides
+
+If multiple plots have same guide, using `guides = "collect"` in `plot_layout()` drops the duplicate guide
+
+```{r, message = FALSE, fig.height = 6, fig.width = 8}
+(groupedbar_gender | (stackedbar_gender / hist_age)) +
+  plot_layout(guides = "collect")
+```

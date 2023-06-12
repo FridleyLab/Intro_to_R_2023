@@ -4,7 +4,7 @@ subtitle: "Tests of mean"
 author: 
   - Ram Thapa
 institute: "Moffitt Cancer Center"
-date: "June 29, 2022"
+date: "June 28, 2023"
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -21,6 +21,8 @@ output:
       highlightLines: true
       ratio: 16:9
       countIncrementalSlides: true
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -169,10 +171,10 @@ library(broom)
 theme_set(theme_bw(base_size = 15))
 
 # import data 
-clinical <- read_csv(here::here("data", "tcga_clinical.txt"))
-tcga_gene_exp <- read_csv(here::here("data", "tcga_gene_exp.txt"))
+clinical <- read_delim(here::here("data", "tcga_clinical.txt"))
+tcga_gene_exp <- read_delim(here::here("data", "tcga_gene_exp.txt"))
 
-# Merge clnical and expression data
+# Merge clinical and expression data
 clinical_exprs <- left_join(
   clinical, tcga_gene_exp, by = "bcr_patient_barcode") %>% 
   mutate(stage = str_remove(stage, "A$|B$|C$"))
