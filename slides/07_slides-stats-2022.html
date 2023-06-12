@@ -4,7 +4,7 @@
     <title>Lea.orange[R]ning about Statistics</title>
     <meta charset="utf-8" />
     <meta name="author" content="Zachary Thompson" />
-    <meta name="date" content="2022-07-12" />
+    <meta name="date" content="2023-06-08" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
     <script src="libs/tile-view/tile-view.js"></script>
@@ -46,7 +46,7 @@ Zachary Thompson&lt;br&gt;
 ]
 
 .talk-date.moffitt-gray[
-July 12, 2022
+June 08, 2023
 ]
 ]
 
@@ -107,7 +107,7 @@ or to force either to be shown
 ```
 
 ```
-[1] "F:/myGitRepo/Intro_to_R_2022"
+[1] "F:/myGitRepo/Intro_to_R_2023"
 ```
 
 ```r
@@ -115,7 +115,7 @@ or to force either to be shown
 ```
 
 ```
-[1] "F:/myGitRepo/Intro_to_R_2022/data/tcga-clinical.txt"
+[1] "F:/myGitRepo/Intro_to_R_2023/data/tcga-clinical.txt"
 ```
 
 ```r
@@ -123,7 +123,7 @@ or to force either to be shown
 ```
 
 ```
-[1] "F:/myGitRepo/Intro_to_R_2022/data/tcga-gene-exp.txt"
+[1] "F:/myGitRepo/Intro_to_R_2023/data/tcga-gene-exp.txt"
 ```
 
 ---
@@ -251,9 +251,9 @@ tcga %&gt;%
 ## Review of tables
 
 ```r
-tcga %&gt;% 
-  tabyl(smoking, gender, show_na = FALSE ) %&gt;% 
-  adorn_totals(where = c("row"))
+tcga %&gt;%
+  tabyl(smoking, gender, show_na = FALSE ) %&gt;%
+  adorn_totals(where = "row")
 ```
 
 ```
@@ -1428,6 +1428,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable

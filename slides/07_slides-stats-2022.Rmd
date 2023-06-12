@@ -290,9 +290,9 @@ tcga %>%
 ## Review of tables
 ```{r comment=NA}
 
-tcga %>% 
-  tabyl(smoking, gender, show_na = FALSE ) %>% 
-  adorn_totals(where = c("row"))
+tcga %>%
+  tabyl(smoking, gender, show_na = FALSE ) %>%
+  adorn_totals(where = "row")
 ```
 
 ---
