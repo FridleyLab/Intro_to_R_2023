@@ -4,7 +4,7 @@
     <title>Lea.orange[R]ning about Statistics - YEAH!!!</title>
     <meta charset="utf-8" />
     <meta name="author" content="Zachary Thompson" />
-    <meta name="date" content="2023-06-08" />
+    <meta name="date" content="2023-06-12" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
     <script src="libs/tile-view/tile-view.js"></script>
@@ -48,7 +48,7 @@ Zachary Thompson&lt;br&gt;
 ]
 
 .talk-date.moffitt-gray[
-June 08, 2023
+June 12, 2023
 ]
 ]
 
@@ -143,8 +143,12 @@ or to force either to be shown
 
 
 ```r
-clinical &lt;- read_csv(file = here("data","tcga_clinical.txt"))
-geneexp &lt;- read_csv(file = here("data","tcga_gene_exp.txt"))
+# clinical &lt;- read_csv(file = here("data","tcga_clinical.txt"))
+# geneexp &lt;- read_csv(file = here("data","tcga_gene_exp.txt"))
+ clinical &lt;- read.csv(file = here("data","tcga_clinical.txt"),
+                                           header = TRUE, sep = "")
+  geneexp &lt;- read.csv(file = here("data","tcga_gene_exp.txt"),
+                                     header = TRUE, sep = ",")
 ```
  
 

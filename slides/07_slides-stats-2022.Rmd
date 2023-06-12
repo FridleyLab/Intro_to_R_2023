@@ -197,11 +197,10 @@ or to force either to be shown
 ```{r comment=NA}
 
 
-clinical <- read.csv(file = here("data","tcga_clinical.txt"),
-                     header = TRUE)
-geneexp <- read.csv(file = here("data","tcga_gene_exp.txt"),
-                    header = TRUE)
-  
+ clinical <- read.csv(file = here("data","tcga_clinical.txt"),
+                                           header = TRUE, sep = "")
+  geneexp <- read.csv(file = here("data","tcga_gene_exp.txt"),
+                                     header = TRUE, sep = ",")  
 ```
 
 
