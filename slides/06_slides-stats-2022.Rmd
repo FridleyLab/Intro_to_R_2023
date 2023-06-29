@@ -153,7 +153,7 @@ or to force either to be shown
 
 ---
 
-## What you will learn to run
+## What you will learn to run!
  
  
 - Scatterplots
