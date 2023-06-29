@@ -86,7 +86,7 @@ before you arrive that you can access GitHub.
 - June 21 - [Visualizations with `ggplot2` part
   I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=450fa6c1-c6d5-4a41-8ce8-b028014df44c)
 - June 28 - [Visualizations with `ggplot2` part
-  II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=77afb363-11d7-40c5-beff-aec3014a604f)
+  II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=726e0b9b-0a28-48ac-abf3-b02f015092cb)
 - July 05 - [Statistics part
   I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=88550b82-b60b-42e3-bba4-aeca0151967b)
 - July 12 - [Statistics part
