@@ -82,11 +82,11 @@ before you arrive that you can access GitHub.
 - June 07 - [Data import and wrangling part
   I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=e8f7c87f-84a4-4366-87ea-b01a0155080b)
 - June 14 - [Data wrangling part
-  II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=c9dcb86c-d5fe-4662-bfbf-aeb5014a74bb)
+  II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=6ac1fd03-e76f-4ef3-ad77-b02101541d07)
 - June 21 - [Visualizations with `ggplot2` part
-  I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=59d650c7-fb6d-45b7-9146-aebc014f764c)
+  I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=450fa6c1-c6d5-4a41-8ce8-b028014df44c)
 - June 28 - [Visualizations with `ggplot2` part
-  II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=77afb363-11d7-40c5-beff-aec3014a604f)
+  II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=726e0b9b-0a28-48ac-abf3-b02f015092cb)
 - July 05 - [Statistics part
   I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=88550b82-b60b-42e3-bba4-aeca0151967b)
 - July 12 - [Statistics part
