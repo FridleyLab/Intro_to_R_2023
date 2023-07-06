@@ -153,7 +153,7 @@ or to force either to be shown
 
 ---
 
-## What you will learn to run
+## What you will learn to run!
  
  
 - Scatterplots
@@ -174,8 +174,8 @@ or to force either to be shown
  
  here()
  here("data")
- here("data","tcga-clinical.txt")
- here("data","tcga-gene-exp.txt")
+ here("data","tcga_clinical.txt")
+ here("data","tcga_gene_exp.txt")
 
 ```
 
@@ -237,6 +237,18 @@ or to force either to be shown
 
  
 ---
+
+ 
+ 
+
+```{r message=FALSE, warning=FALSE, comment=NA, include=FALSE, eval=FALSE, include=FALSE}
+tcga <- tcga %>% mutate(DUOX1_exp = 
+                          case_when(DUOX1_exp <   16.89  ~ DUOX1_exp + runif(length(DUOX1_exp),1,1000),
+                                    TRUE ~ DUOX1_exp))
+```
+
+  
+
 
 ## Scatter plots 
 
@@ -778,15 +790,15 @@ ggplot(pdata, aes(x,y)) + geom_point()
 ```{r  comment=NA}
 
  
-r1 <- tcga %>% correlation::cor_test("DUOXA1_exp", 
+rs1 <- tcga %>% correlation::cor_test("DUOXA1_exp", 
                                           "DUOX1_exp", 
                                           method = c("spearman") ) 
  
-r2 <- tcga %>% correlation::cor_test("BUB1_exp",
+rs2 <- tcga %>% correlation::cor_test("BUB1_exp",
                                           "C10orf32_exp",
                                           method = c("spearman") ) 
  
-r3 <- tcga %>% correlation::cor_test("BRAF_exp", 
+rs3 <- tcga %>% correlation::cor_test("BRAF_exp", 
                                           "DTL_exp", 
                                           method = c("spearman") )
  
@@ -798,7 +810,7 @@ r3 <- tcga %>% correlation::cor_test("BRAF_exp",
  
 
 ```{r comment=NA}
- knitr::kable(bind_rows(r1, r2, r3), format = 'html', digits = 3) %>%
+ knitr::kable(bind_rows(rs1, rs2, rs3), format = 'html', digits = 3) %>%
   kable_styling(font_size = 12)
 
 ```
@@ -809,7 +821,7 @@ r3 <- tcga %>% correlation::cor_test("BRAF_exp",
  
 
 ```{r comment=NA}
- bind_rows(r1,r2,r3 ) 
+ bind_rows(rs1,rs2,rs3 ) 
 
 ```
 
@@ -829,7 +841,7 @@ ggplot(tcga) +
   aes(BUB1_exp, C10orf32_exp) + 
   geom_point() + 
   annotate(geom = "text", x = 1000, y = 4000, 
-           label = paste("r = ", round(r2$r, 2), sep = ""),
+           label = paste("r = ", round(rs2$r, 2), sep = ""),
            color = "red")
  
 
@@ -911,7 +923,7 @@ ggplot(tcga) +
   aes(DUOXA1_exp, DUOX1_exp) + 
   geom_point() + 
   annotate(geom = "text", x = 10, y = 25000, 
-           label = paste("r = ", round(r1$r, 4), sep = ""),
+           label = paste("r = ", round(r1$r, 2), sep = ""),
            color = "red")
 
 ```
@@ -926,7 +938,7 @@ ggplot(tcga) +
 
 
 ---
-
+ 
 
 ##  Simple linear regression 
  
@@ -964,6 +976,12 @@ Residual standard error: 824.9 on 1041 degrees of freedom
 Multiple R-squared:  0.8431,	Adjusted R-squared:  0.8429 
 
 F-statistic:  5593 on 1 and 1041 DF,  p-value: < 0.00000000000000022
+
+- residual standard error (RSE) measures the average deviation of observed values from the regression line
+- the multiple R-squared (R-squared) quantifies the proportion of variation explained by the predictors  
+- the F-statistic tests the overall significance of the model.
+
+These statistics help assess the quality of the regression model and its ability to explain and predict the response variable.
 
 ---
 
@@ -1025,6 +1043,20 @@ ggplot(tcga, aes(DUOXA1_exp, DUOX1_exp)) +
 
 ---
 
+
+##  Simple linear regression - lm 
+ 
+
+```{r comment=NA}
+class(lmfit)
+names( lmfit )
+names( summary(lmfit) )
+ 
+```
+ 
+---
+
+
 ## Residual Scatter Plot 
  
  
@@ -1045,14 +1077,57 @@ ggplot( resid, aes(fitted, residuals) ) +
 ```
 ]
 ]
- 
-
-
- 
-
 
 
 ---
+
+
+## Histogram
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r hist1, echo = TRUE, fig.show = "hide"}
+ggplot(tcga, aes(x = DUOX1_exp )) + 
+ geom_histogram( )
+ 
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "hist1", echo = FALSE}
+```
+]
+]
+
+
+---
+
+## Histogram of sqrt 
+
+.panelset[
+.panel[.panel-name[R Code]
+
+```{r hist1sqqrt, echo = TRUE, fig.show = "hide"}
+ggplot(tcga, aes(x = sqrt(DUOX1_exp) )) + 
+ geom_histogram( )
+ 
+
+```
+]
+
+.panel[.panel-name[Plot]
+
+```{r ref.label = "hist1sqqrt", echo = FALSE}
+```
+]
+]
+
+
+---
+
 
 
 ##  Simple linear regression - sqrt transformation
@@ -1080,17 +1155,7 @@ F-statistic: 1.349e+04 on 1 and 1041 DF,  p-value: < 0.00000000000000022
 ---
 
 
-##  Simple linear regression - sqrt transformation
- 
 
-```{r comment=NA}
-
-names( lmfit )
-names( summary(lmfit) )
- 
-```
- 
----
 
 ## Residual Scatter Plot - sqrt transformation
  
@@ -1146,9 +1211,9 @@ ggplot(tcga, aes(sqrt(DUOXA1_exp), sqrt(DUOX1_exp) )) +
 
 ---
 
-## Multiple Regression 
+## Multiple (or multivariable) Regression 
 
- More than one predictor
+ More than one predictor 
  
 $Y_{i}$ = $\beta_{0}$ + $\beta_{1}$ $X_{1}$ + $\beta_{2}$ $X_{2}$ + ... + $\beta_{k}$ $X_{k}$ + $\epsilon_{i}$ for i = 1, 2, ..., n 
 
@@ -1167,7 +1232,7 @@ $\epsilon_{i}$ ~ $N(0, \sigma^{2})$
 
 ---
 
-## Multiple Regression 
+## Multivariable Regression 
 
  More than one predictor
  
@@ -1183,12 +1248,12 @@ $\sigma^{2}$. These are the same assumptions that we used in simple regression w
  following _i_ simply denotes which predictor it is.
 
 - The word "linear" in "multiple linear regression" refers to the fact that the model is linear in the parameters, 
-$\beta_{0}$, $\beta_{1}$, $\beta_{2}$, $\beta_{k}$. This means that each parameter multiplies a predictor, while the regression function is a sum of these 
-"parameter times predictor" terms.  
+$\beta_{0}$, $\beta_{1}$, $\beta_{2}$, $\beta_{k}$. Each parameter multiplies a predictor, and the regression function is a sum of these 
+("parameter times predictor") terms.  
 
 
 ---
-##  Multiple regression 
+##  Multivariable Regression 
  
 
 ```{r comment=NA}
@@ -1202,7 +1267,7 @@ $\beta_{0}$, $\beta_{1}$, $\beta_{2}$, $\beta_{k}$. This means that each paramet
 
 
 
-##  Multiple regression 
+##  Multivariable Regression 
  
 
 ```{r comment=NA}
@@ -1232,10 +1297,57 @@ F-statistic:  2803 on 2 and 1040 DF,  p-value: < 0.00000000000000022
  
 
 ```{r comment=NA}
-tcgareg <- tcga %>% filter(race %in% c("ASIAN","BLACK OR AFRICAN AMERICAN","WHITE"))
+tcgareg <- tcga %>% filter(race %in% c("ASIAN","BLACK OR AFRICAN AMERICAN","WHITE")) %>% 
+                    mutate(
+                           race = case_when(race =="BLACK OR AFRICAN AMERICAN" ~ "AA", 
+                                                                          TRUE ~ race),
+                    race0 = race,
+                    race = ordered(race, levels = c("WHITE","ASIAN","AA"))
+                    ) 
+
+```
+
+---
+
+##  Multivariable regression 
+ 
+
+```{r comment=NA} 
+summary( mlmfit2 <- lm(DUOX1_exp ~ DUOXA1_exp  + gender + race0 , data = tcgareg) )
+
+```
+
+---
+
+##  Multivariable regression 
+ 
+
+```{r comment=NA} 
+options()$contrasts
+ 
+```
+
+---
+##  Multivariable regression 
+ 
+
+```{r comment=NA}
+ 
 summary( mlmfit2 <- lm(DUOX1_exp ~ DUOXA1_exp  + gender + race , data = tcgareg) )
 
 ```
+
+---
+
+##  Multivariable regression 
+ 
+
+```{r comment=NA}
+options(contrasts = rep ("contr.treatment", 2)) 
+summary( mlmfit2 <- lm(DUOX1_exp ~ DUOXA1_exp  + gender + race , data = tcgareg) )
+
+```
+
 ---
 
 

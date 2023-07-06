@@ -4,7 +4,7 @@
     <title>Lea.orange[R]ning about Statistics - YEAH!!!</title>
     <meta charset="utf-8" />
     <meta name="author" content="Zachary Thompson" />
-    <meta name="date" content="2023-06-12" />
+    <meta name="date" content="2023-06-29" />
     <script src="libs/header-attrs/header-attrs.js"></script>
     <link href="libs/tile-view/tile-view.css" rel="stylesheet" />
     <script src="libs/tile-view/tile-view.js"></script>
@@ -48,7 +48,7 @@ Zachary Thompson&lt;br&gt;
 ]
 
 .talk-date.moffitt-gray[
-June 12, 2023
+June 29, 2023
 ]
 ]
 
@@ -86,7 +86,7 @@ or to force either to be shown
 
 ---
 
-## What you will learn to run
+## What you will learn to run!
  
  
 - Scatterplots
@@ -121,19 +121,19 @@ or to force either to be shown
 ```
 
 ```r
- here("data","tcga-clinical.txt")
+ here("data","tcga_clinical.txt")
 ```
 
 ```
-[1] "F:/myGitRepo/Intro_to_R_2023/data/tcga-clinical.txt"
+[1] "F:/myGitRepo/Intro_to_R_2023/data/tcga_clinical.txt"
 ```
 
 ```r
- here("data","tcga-gene-exp.txt")
+ here("data","tcga_gene_exp.txt")
 ```
 
 ```
-[1] "F:/myGitRepo/Intro_to_R_2023/data/tcga-gene-exp.txt"
+[1] "F:/myGitRepo/Intro_to_R_2023/data/tcga_gene_exp.txt"
 ```
 
 ---
@@ -143,8 +143,6 @@ or to force either to be shown
 
 
 ```r
-# clinical &lt;- read_csv(file = here("data","tcga_clinical.txt"))
-# geneexp &lt;- read_csv(file = here("data","tcga_gene_exp.txt"))
  clinical &lt;- read.csv(file = here("data","tcga_clinical.txt"),
                                            header = TRUE, sep = "")
   geneexp &lt;- read.csv(file = here("data","tcga_gene_exp.txt"),
@@ -211,6 +209,14 @@ or to force either to be shown
  
 ---
 
+ 
+ 
+
+
+
+  
+
+
 ## Scatter plots 
 
   
@@ -228,7 +234,7 @@ ggplot(tcga) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-6-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-7-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -252,7 +258,7 @@ ggplot(tcga) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-7-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-8-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -277,7 +283,7 @@ ggplot(tcga %&gt;% filter(!is.na(smoking))) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-8-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-9-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -300,7 +306,7 @@ ggplot(tcga %&gt;% filter(!is.na(smoking))) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-9-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-10-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -325,7 +331,7 @@ ggplot(tcga %&gt;% filter(!is.na(smoking))) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-10-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-11-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -351,7 +357,7 @@ ggplot(tcga %&gt;% filter(!is.na(smoking))) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-11-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-12-1.png" width="100%" /&gt;
 ]
 ]
   
@@ -388,7 +394,7 @@ ggplot(tcga) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-12-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-13-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -415,7 +421,7 @@ ggplot(tcga) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-13-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-14-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -442,7 +448,7 @@ ggplot(tcga) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-14-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-15-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -469,7 +475,7 @@ ggplot(tcga) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-15-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-16-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -647,7 +653,7 @@ ggplot(tcga) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-19-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-20-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -673,7 +679,7 @@ ggplot(tcga) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-20-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-21-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -702,7 +708,7 @@ ggplot(tcga) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-21-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-22-1.png" width="100%" /&gt;
 ]
 ]
 
@@ -756,7 +762,7 @@ The Spearman correlation evaluates the monotonic or non-linear relationship betw
 
 
  
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-23-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-24-1.png" width="100%" /&gt;
 
 ---
 
@@ -766,7 +772,7 @@ The Spearman correlation evaluates the monotonic or non-linear relationship betw
 
 
  
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-24-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-25-1.png" width="100%" /&gt;
 
 
 
@@ -780,15 +786,15 @@ The Spearman correlation evaluates the monotonic or non-linear relationship betw
 
 
 ```r
-r1 &lt;- tcga %&gt;% correlation::cor_test("DUOXA1_exp", 
+rs1 &lt;- tcga %&gt;% correlation::cor_test("DUOXA1_exp", 
                                           "DUOX1_exp", 
                                           method = c("spearman") ) 
  
-r2 &lt;- tcga %&gt;% correlation::cor_test("BUB1_exp",
+rs2 &lt;- tcga %&gt;% correlation::cor_test("BUB1_exp",
                                           "C10orf32_exp",
                                           method = c("spearman") ) 
  
-r3 &lt;- tcga %&gt;% correlation::cor_test("BRAF_exp", 
+rs3 &lt;- tcga %&gt;% correlation::cor_test("BRAF_exp", 
                                           "DTL_exp", 
                                           method = c("spearman") )
 ```
@@ -800,7 +806,7 @@ r3 &lt;- tcga %&gt;% correlation::cor_test("BRAF_exp",
 
 
 ```r
- knitr::kable(bind_rows(r1, r2, r3), format = 'html', digits = 3) %&gt;%
+ knitr::kable(bind_rows(rs1, rs2, rs3), format = 'html', digits = 3) %&gt;%
   kable_styling(font_size = 12)
 ```
 
@@ -866,7 +872,7 @@ r3 &lt;- tcga %&gt;% correlation::cor_test("BRAF_exp",
 
 
 ```r
- bind_rows(r1,r2,r3 ) 
+ bind_rows(rs1,rs2,rs3 ) 
 ```
 
 ```
@@ -895,14 +901,14 @@ ggplot(tcga) +
   aes(BUB1_exp, C10orf32_exp) + 
   geom_point() + 
   annotate(geom = "text", x = 1000, y = 4000, 
-           label = paste("r = ", round(r2$r, 2), sep = ""),
+           label = paste("r = ", round(rs2$r, 2), sep = ""),
            color = "red")
 ```
 ]
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-28-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-29-1.png" width="100%" /&gt;
 ]
 ]
 
@@ -984,20 +990,20 @@ ggplot(tcga) +
   aes(DUOXA1_exp, DUOX1_exp) + 
   geom_point() + 
   annotate(geom = "text", x = 10, y = 25000, 
-           label = paste("r = ", round(r1$r, 4), sep = ""),
+           label = paste("r = ", round(r1$r, 2), sep = ""),
            color = "red")
 ```
 ]
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-30-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-31-1.png" width="100%" /&gt;
 ]
 ]
 
 
 ---
-
+ 
 
 ##  Simple linear regression 
  
@@ -1065,6 +1071,12 @@ Multiple R-squared:  0.8431,	Adjusted R-squared:  0.8429
 
 F-statistic:  5593 on 1 and 1041 DF,  p-value: &lt; 0.00000000000000022
 
+- residual standard error (RSE) measures the average deviation of observed values from the regression line
+- the multiple R-squared (R-squared) quantifies the proportion of variation explained by the predictors  
+- the F-statistic tests the overall significance of the model.
+
+These statistics help assess the quality of the regression model and its ability to explain and predict the response variable.
+
 ---
 
 
@@ -1090,7 +1102,7 @@ ggplot(tcga, aes(DUOXA1_exp, DUOX1_exp )) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-33-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-34-1.png" width="100%" /&gt;
 ]
 ]
 
@@ -1117,13 +1129,49 @@ ggplot(tcga, aes(DUOXA1_exp, DUOX1_exp)) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-34-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-35-1.png" width="100%" /&gt;
 ]
 ]
  
   
 
 ---
+
+
+##  Simple linear regression - lm 
+ 
+
+
+```r
+class(lmfit)
+```
+
+```
+[1] "lm"
+```
+
+```r
+names( lmfit )
+```
+
+```
+ [1] "coefficients"  "residuals"     "effects"       "rank"         
+ [5] "fitted.values" "assign"        "qr"            "df.residual"  
+ [9] "xlevels"       "call"          "terms"         "model"        
+```
+
+```r
+names( summary(lmfit) )
+```
+
+```
+ [1] "call"          "terms"         "residuals"     "coefficients" 
+ [5] "aliased"       "sigma"         "df"            "r.squared"    
+ [9] "adj.r.squared" "fstatistic"    "cov.unscaled" 
+```
+ 
+---
+
 
 ## Residual Scatter Plot 
  
@@ -1141,17 +1189,56 @@ ggplot( resid, aes(fitted, residuals) ) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-35-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-37-1.png" width="100%" /&gt;
 ]
 ]
- 
-
-
- 
-
 
 
 ---
+
+
+## Histogram
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga, aes(x = DUOX1_exp )) + 
+ geom_histogram( )
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-38-1.png" width="100%" /&gt;
+]
+]
+
+
+---
+
+## Histogram of sqrt 
+
+.panelset[
+.panel[.panel-name[R Code]
+
+
+```r
+ggplot(tcga, aes(x = sqrt(DUOX1_exp) )) + 
+ geom_histogram( )
+```
+]
+
+.panel[.panel-name[Plot]
+
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-39-1.png" width="100%" /&gt;
+]
+]
+
+
+---
+
 
 
 ##  Simple linear regression - sqrt transformation
@@ -1199,31 +1286,7 @@ F-statistic: 1.349e+04 on 1 and 1041 DF,  p-value: &lt; 0.00000000000000022
 ---
 
 
-##  Simple linear regression - sqrt transformation
- 
 
-
-```r
-names( lmfit )
-```
-
-```
- [1] "coefficients"  "residuals"     "effects"       "rank"         
- [5] "fitted.values" "assign"        "qr"            "df.residual"  
- [9] "xlevels"       "call"          "terms"         "model"        
-```
-
-```r
-names( summary(lmfit) )
-```
-
-```
- [1] "call"          "terms"         "residuals"     "coefficients" 
- [5] "aliased"       "sigma"         "df"            "r.squared"    
- [9] "adj.r.squared" "fstatistic"    "cov.unscaled" 
-```
- 
----
 
 ## Residual Scatter Plot - sqrt transformation
  
@@ -1241,7 +1304,7 @@ ggplot( resid, aes(fitted, residuals) ) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-38-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-41-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -1268,7 +1331,7 @@ ggplot(tcga, aes(sqrt(DUOXA1_exp), sqrt(DUOX1_exp) )) +
 
 .panel[.panel-name[Plot]
 
-&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-39-1.png" width="100%" /&gt;
+&lt;img src="06_slides-stats-2022_files/figure-html/unnamed-chunk-42-1.png" width="100%" /&gt;
 ]
 ]
  
@@ -1278,9 +1341,9 @@ ggplot(tcga, aes(sqrt(DUOXA1_exp), sqrt(DUOX1_exp) )) +
 
 ---
 
-## Multiple Regression 
+## Multiple (or multivariable) Regression 
 
- More than one predictor
+ More than one predictor 
  
 `\(Y_{i}\)` = `\(\beta_{0}\)` + `\(\beta_{1}\)` `\(X_{1}\)` + `\(\beta_{2}\)` `\(X_{2}\)` + ... + `\(\beta_{k}\)` `\(X_{k}\)` + `\(\epsilon_{i}\)` for i = 1, 2, ..., n 
 
@@ -1299,7 +1362,7 @@ ggplot(tcga, aes(sqrt(DUOXA1_exp), sqrt(DUOX1_exp) )) +
 
 ---
 
-## Multiple Regression 
+## Multivariable Regression 
 
  More than one predictor
  
@@ -1315,12 +1378,12 @@ ggplot(tcga, aes(sqrt(DUOXA1_exp), sqrt(DUOX1_exp) )) +
  following _i_ simply denotes which predictor it is.
 
 - The word "linear" in "multiple linear regression" refers to the fact that the model is linear in the parameters, 
-`\(\beta_{0}\)`, `\(\beta_{1}\)`, `\(\beta_{2}\)`, `\(\beta_{k}\)`. This means that each parameter multiplies a predictor, while the regression function is a sum of these 
-"parameter times predictor" terms.  
+`\(\beta_{0}\)`, `\(\beta_{1}\)`, `\(\beta_{2}\)`, `\(\beta_{k}\)`. Each parameter multiplies a predictor, and the regression function is a sum of these 
+("parameter times predictor") terms.  
 
 
 ---
-##  Multiple regression 
+##  Multivariable Regression 
  
 
 
@@ -1343,7 +1406,7 @@ Coefficients:
 
 
 
-##  Multiple regression 
+##  Multivariable Regression 
  
 
 
@@ -1395,7 +1458,70 @@ F-statistic:  2803 on 2 and 1040 DF,  p-value: &lt; 0.00000000000000022
 
 
 ```r
-tcgareg &lt;- tcga %&gt;% filter(race %in% c("ASIAN","BLACK OR AFRICAN AMERICAN","WHITE"))
+tcgareg &lt;- tcga %&gt;% filter(race %in% c("ASIAN","BLACK OR AFRICAN AMERICAN","WHITE")) %&gt;% 
+                    mutate(
+                           race = case_when(race =="BLACK OR AFRICAN AMERICAN" ~ "AA", 
+                                                                          TRUE ~ race),
+                    race0 = race,
+                    race = ordered(race, levels = c("WHITE","ASIAN","AA"))
+                    ) 
+```
+
+---
+
+##  Multivariable regression 
+ 
+
+
+```r
+summary( mlmfit2 &lt;- lm(DUOX1_exp ~ DUOXA1_exp  + gender + race0 , data = tcgareg) )
+```
+
+```
+
+Call:
+lm(formula = DUOX1_exp ~ DUOXA1_exp + gender + race0, data = tcgareg)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9027.2  -136.7   -41.1    44.4  5940.3 
+
+Coefficients:
+             Estimate Std. Error t value            Pr(&gt;|t|)    
+(Intercept) 145.62987   90.37071   1.611              0.1074    
+DUOXA1_exp    3.04470    0.04125  73.810 &lt;0.0000000000000002 ***
+genderMALE  -92.88159   55.89298  -1.662              0.0969 .  
+race0ASIAN  107.22323  206.76943   0.519              0.6042    
+race0WHITE   -4.25651   86.49167  -0.049              0.9608    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 825.8 on 1014 degrees of freedom
+Multiple R-squared:  0.844,	Adjusted R-squared:  0.8434 
+F-statistic:  1371 on 4 and 1014 DF,  p-value: &lt; 0.00000000000000022
+```
+
+---
+
+##  Multivariable regression 
+ 
+
+
+```r
+options()$contrasts
+```
+
+```
+        unordered           ordered 
+"contr.treatment"      "contr.poly" 
+```
+
+---
+##  Multivariable regression 
+ 
+
+
+```r
 summary( mlmfit2 &lt;- lm(DUOX1_exp ~ DUOXA1_exp  + gender + race , data = tcgareg) )
 ```
 
@@ -1409,18 +1535,12 @@ Residuals:
 -9027.2  -136.7   -41.1    44.4  5940.3 
 
 Coefficients:
-                                Estimate Std. Error t value
-(Intercept)                    252.85311  193.91015   1.304
-DUOXA1_exp                       3.04470    0.04125  73.810
-genderMALE                     -92.88159   55.89298  -1.662
-raceBLACK OR AFRICAN AMERICAN -107.22323  206.76943  -0.519
-raceWHITE                     -111.47975  191.70277  -0.582
-                                         Pr(&gt;|t|)    
-(Intercept)                                0.1925    
-DUOXA1_exp                    &lt;0.0000000000000002 ***
-genderMALE                                 0.0969 .  
-raceBLACK OR AFRICAN AMERICAN              0.6042    
-raceWHITE                                  0.5610    
+             Estimate Std. Error t value            Pr(&gt;|t|)    
+(Intercept) 179.95212   80.37319   2.239              0.0254 *  
+DUOXA1_exp    3.04470    0.04125  73.810 &lt;0.0000000000000002 ***
+genderMALE  -92.88159   55.89298  -1.662              0.0969 .  
+race.L        3.00981   61.15884   0.049              0.9608    
+race.Q      -89.28512  158.91627  -0.562              0.5744    
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1428,6 +1548,42 @@ Residual standard error: 825.8 on 1014 degrees of freedom
 Multiple R-squared:  0.844,	Adjusted R-squared:  0.8434 
 F-statistic:  1371 on 4 and 1014 DF,  p-value: &lt; 0.00000000000000022
 ```
+
+---
+
+##  Multivariable regression 
+ 
+
+
+```r
+options(contrasts = rep ("contr.treatment", 2)) 
+summary( mlmfit2 &lt;- lm(DUOX1_exp ~ DUOXA1_exp  + gender + race , data = tcgareg) )
+```
+
+```
+
+Call:
+lm(formula = DUOX1_exp ~ DUOXA1_exp + gender + race, data = tcgareg)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-9027.2  -136.7   -41.1    44.4  5940.3 
+
+Coefficients:
+             Estimate Std. Error t value             Pr(&gt;|t|)    
+(Intercept) 141.37336   51.05219   2.769              0.00572 ** 
+DUOXA1_exp    3.04470    0.04125  73.810 &lt; 0.0000000000000002 ***
+genderMALE  -92.88159   55.89298  -1.662              0.09687 .  
+raceASIAN   111.47975  191.70277   0.582              0.56102    
+raceAA        4.25651   86.49167   0.049              0.96076    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 825.8 on 1014 degrees of freedom
+Multiple R-squared:  0.844,	Adjusted R-squared:  0.8434 
+F-statistic:  1371 on 4 and 1014 DF,  p-value: &lt; 0.00000000000000022
+```
+
 ---
 
 
