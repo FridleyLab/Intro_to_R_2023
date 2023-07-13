@@ -90,7 +90,7 @@ before you arrive that you can access GitHub.
 - July 05 - [Statistics part
   I](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=a00ea64b-ba04-4667-a576-b03601505ca7)
 - July 12 - [Statistics part
-  II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=3ba6f5c1-a058-4d93-85f8-aed1014d746f)
+  II](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=f034f531-3453-41ff-92d5-b03d015383f1)
 - July 19 -
   [`rmarkdown`](https://moffitt.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=9382f60b-eb19-4eb4-9426-aed8014ac911)
 
